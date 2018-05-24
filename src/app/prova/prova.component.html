@@ -1,0 +1,254 @@
+<div data-spy="scroll" data-target=".navbar" data-offset="50">  
+    <div id = 'select'>
+      <div class = 'row' id = 'selectYearLabel'>
+          <div class = 'col-lg-3 '>
+            <label>Selecione o ano da Prova:</label>      
+          <select [(ngModel)] = 'valueYear' (change) = 'selectAno()'  class = 'selectpicker'>
+              <option value="{{item}}" *ngFor = 'let item of year'>{{item}}</option>
+            </select>
+          </div> 
+          <div class = 'col-lg-3'>
+            <label>Selecione  a disciplina da Prova:</label>
+          <select [(ngModel)] = 'disciplina' (change) = 'selectAno()' class = 'selectpicker'>
+              <option value="{{item}}" *ngFor = 'let item of disciplinas'>{{item}}</option>
+            </select>
+        </div> 
+     
+          <div class = 'col-lg-6'>
+              
+            <label>Upload arquivo Excel:</label>
+            <div class = 'row'>
+              <div class = 'col-lg-12'>
+                  <div class='input-wrapper'>
+                <label for='input-file' id ='labelFile'>Selecionar um arquivo &#187;</label>              
+                <input  id='input-file' type="file"  #valuePath (change)="handleFile($event)"  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" value =''/>
+                <button  type="button" class="btn btn-success" *ngIf="result && result.length>0" (click) = 'enviarPerguntaUpload()'>Enviar Perguntas</button>
+                <div class = 'row'>
+                    <div class = 'col-lg-12'>
+                    <span id='file-name'>{{valuePath.value}}</span>
+                    
+                  </div>
+                </div>
+                <div class="alert alert-success" *ngIf = 'validacao === 2'>
+                    <strong>Sucesso!</strong> O caderno foi inserido corretamente.
+                  </div>
+                  <div class="alert alert-danger" *ngIf = 'validacao === 1'>
+                      <strong>Erro ao inserir caderdo!</strong> Verifique se a estrutura do arquivo xls está correto.
+                    </div>
+               
+                </div>
+              </div>
+  
+            </div>
+          </div>
+        </div>
+      <div id = 'prova' class = 'reg'>
+        
+      <h1>Prova</h1>
+      
+      <!-- One "tab" for each step in the form: -->
+      <div class="tab" [ngStyle]="currentTab === 0 && {'display':'block'} || currentTab !== 0 && {'display':'none'}">
+        <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Pergunta" type = 'text' [(ngModel)]="pergunta" ></textarea></p>
+        
+      </div>
+      
+      <div class="tab" [ngStyle]="currentTab === 1 && {'display':'block'} || currentTab !== 1 && {'display':'none'}">
+        
+        <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta A)" type = 'text' [(ngModel)]="resposta1" ></textarea></p>
+        <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" type = 'text' [(ngModel)]="justificativaresposta1" ></textarea></p>
+      </div>
+      
+      <div class="tab" [ngStyle]="currentTab === 2 && {'display':'block'} || currentTab !== 2 && {'display':'none'}">        
+          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta B)" type = 'text' [(ngModel)]="resposta2" ></textarea></p>
+          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" type = 'text' [(ngModel)]="justificativaresposta2" ></textarea></p>
+      </div>
+      
+      <div class="tab" [ngStyle]="currentTab === 3 && {'display':'block'} || currentTab !== 3 && {'display':'none'}">        
+          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta C)" type = 'text' [(ngModel)]="resposta3" ></textarea></p>
+          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" type = 'text' [(ngModel)]="justificativaresposta3" ></textarea></p>
+      </div>
+  
+      <div class="tab" [ngStyle]="currentTab === 4 && {'display':'block'} || currentTab !== 4 && {'display':'none'}">        
+          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta D)" type = 'text' [(ngModel)]="resposta4"></textarea></p>
+          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" type = 'text' [(ngModel)]="justificativaresposta4"></textarea></p>
+      </div>
+  
+      <div class="tab" [ngStyle]="currentTab === 5 && {'display':'block'} || currentTab !== 5 && {'display':'none'}">        
+        <p> Selecione a resposta Correta:
+          <select [(ngModel)] = 'respostaCorreta'  class = 'selectpicker'>
+              <option value="resposta1" >a)</option>
+              <option value="resposta2" >b)</option>
+              <option value="resposta3" >c)</option>
+              <option value="resposta4" >d)</option>
+          </select>
+      </p>
+        
+    </div>
+      
+      <div style="overflow:auto;">
+        <div style="float:left;"  [ngStyle]="currentTab !== 6 && {'display':'block'} || currentTab === 6 && {'display':'none'}">
+          <button type="button" class = 'bt' id="prevBtn" (click)="next(-1)"  >Anterior</button>
+        </div>
+        <div style="float:right;"  [ngStyle]="currentTab !== 6 && {'display':'block'} || currentTab === 6 && {'display':'none'}">
+          <button type="button" class = 'bt' id="nextBtn" (click) = "next(1)"  [ngStyle]="currentTab !== 5 && {'display':'block'} || currentTab === 5 && {'display':'none'}">Próximo</button>
+          <button type="button"  class = 'bt' id="conclusion" (click) = "next(1)"  [ngStyle]="currentTab === 5 && {'display':'block'} || currentTab !== 5 && {'display':'none'}" style = 'background:red'>Concluir</button>
+        </div>
+          <h1 [ngStyle]="currentTab === 6 && {'display':'block'} || currentTab !== 6 && {'display':'none'}" style = 'color:green'>CONCLUÍDO COM SUCESSO</h1>
+        
+          <button class  = 'bt' type = 'button' (click) = 'novaPergunta()' [ngStyle]="currentTab === 6 && {'display':'block'} || currentTab !== 6 && {'display':'none'}" style = 'width:100%'>Inserir nova pergunta</button>
+        
+      </div>
+      
+      <!-- Circles which indicates the steps of the form: -->
+      <div style="text-align:center;margin-top:40px;" [ngStyle]="currentTab !== 6 && {'display':'block'} || currentTab === 6 && {'display':'none'}">
+        <span class="step" [ngClass] = "{active:currentTab === 0 , finish: currentTab >= 1}"></span>
+        <span class="step"  [ngClass] = "{active:currentTab === 1 , finish: currentTab >= 2}"></span>
+        <span class="step"  [ngClass] = "{active:currentTab === 2 , finish: currentTab >= 3}"></span>
+        <span class="step"  [ngClass] = "{active:currentTab === 3 , finish: currentTab >= 4}"></span>
+        <span class="step"  [ngClass] = "{active:currentTab === 4 , finish: currentTab >= 5}"></span>
+      </div>
+      </div>
+  
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Pergunta</th>
+              <th>Usuário</th>
+              <th>Ano</th>
+              <th>Editar</th>
+              <th>Excluir</th>
+                    
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor = 'let item of perguntas |  async' >
+              <td>{{item.pergunta}}</td>
+              <td>{{item.criadaPor}}</td>
+              <td>{{item.ano}}</td>
+              <td> <button type="button" class="btn btn-info btn-sm"  (click)="open(content, item)">
+                Editar  
+              </button>
+            </td>
+              <td>  <button type="button" class="btn btn-danger btn-sm" (click) = 'delete(item.$key)'>
+                      Excluir  
+                    </button>
+              </td>
+            
+            </tr>      
+          </tbody>
+        </table>
+  
+      </div>
+  
+  
+      <ng-template #content let-c="close" let-d="dismiss">
+        
+            
+          <div class="modal-header">
+            <h4 class="modal-title">Editar</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">  
+  
+            <ngb-tabset type="pills" horizontal>
+              <ngb-tab title="Pergunta">
+                <ng-template ngbTabContent  style = 'background:#cee1ef'>
+                  
+                  <div class = 'updateBorder'>        
+                      <label>Pergunta:</label>                    
+                      <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"  placeholder="Pergunta" [(ngModel)] = 'perguntaEditar'></textarea></p>
+                  </div>    
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab title="Resposta A" >              
+                <ng-template ngbTabContent >
+                    <div class = 'updateBorder' >
+                        <label>Resposta A:</label>
+                        
+                        <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta" [(ngModel)] = 'resposta1Editar'
+                          [ngStyle]="respostaCorretaBackground === 'resposta1' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta1' && {'background':'#ff6666'} " ></textarea></p>
+                        <label>Justificativa:</label>
+                        
+                        <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta1Editar'
+                          [ngStyle]="respostaCorretaBackground === 'resposta1' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta1' && {'background':'#ff6666'} "></textarea></p>
+                      </div>
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab title="Resposta B" >
+                <ng-template ngbTabContent  style = 'background:#ff3838'>
+                    <div class = 'updateBorder' >
+                        <label>Resposta B:</label>
+                        
+                        <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"  placeholder="Resposta" [(ngModel)] = 'resposta2Editar'
+                          [ngStyle]="respostaCorretaBackground === 'resposta2' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta2' && {'background':'#ff6666'} "></textarea></p>
+                        <label>Justificativa Resposta:</label>
+                        
+                        <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta2Editar' 
+                          [ngStyle]="respostaCorretaBackground === 'resposta2' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta2' && {'background':'#ff6666'} "></textarea></p>
+                    </div>
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab title="Resposta C" >
+                  <ng-template ngbTabContent  style = 'background:#ff3838'>
+                      <div class = 'updateBorder' >
+                          <label>Resposta C:</label>
+                          
+                          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta" [(ngModel)] = 'resposta3Editar'
+                            [ngStyle]="respostaCorretaBackground === 'resposta3' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta3' && {'background':'#ff6666'} "></textarea></p>
+                          <label>Justificativa Resposta:</label>
+                          
+                          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta3Editar'
+                            [ngStyle]="respostaCorretaBackground === 'resposta3' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta3' && {'background':'#ff6666'} "></textarea></p>
+                      </div>
+                  </ng-template>
+                </ngb-tab>
+                <ngb-tab title="Resposta D" >
+                    <ng-template ngbTabContent>
+                                
+                      <div class = 'updateBorder'>
+                          <label>Resposta D:</label>
+                          
+                          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"  placeholder="Resposta" [(ngModel)] = 'resposta4Editar'
+                            [ngStyle]="respostaCorretaBackground === 'resposta4' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta4' && {'background':'#ff6666'} "></textarea></p>
+                          <label>Justificativa Resposta:</label>
+                         
+                          <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta4Editar' 
+                            [ngStyle]="respostaCorretaBackground === 'resposta4' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta4' && {'background':'#ff6666'} " ></textarea></p>
+                        </div>
+                    </ng-template>
+                  </ngb-tab>
+                  <ngb-tab title="Resposta Correta">
+                
+                      <ng-template ngbTabContent >
+                          <div class = 'updateBorder' >
+                              <label>Resposta Correta:</label>
+                              
+                              <select [(ngModel)] = 'respostaCorretaEditar'  class = 'selectpicker'>
+                                  <option value="resposta1" >a)</option>
+                                  <option value="resposta2" >b)</option>
+                                  <option value="resposta3" >c)</option>
+                                  <option value="resposta4" >d)</option>
+                              </select>                            
+                              
+                            </div>
+                      </ng-template>
+                    </ngb-tab>
+            </ngb-tabset>
+     
+  
+  
+           
+         
+  
+          </div>
+          <div class="modal-footer">         
+            <button type="button" class="btn btn-success btn-sm" (click)="update()" (click)="c('Close click')">Editar</button>
+          </div>
+          
+        </ng-template>
+        
+        
+  
+  

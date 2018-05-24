@@ -1,0 +1,11 @@
+<div class="login-page"> 
+  <div class="form">
+      <h2>Login</h2>
+    <div class="login-form">
+      <input type="text" placeholder="E-mail" [(ngModel)] = 'email' />
+      <input type="password" placeholder="Senha"  [(ngModel)] = 'senha' />
+      <button (click) = ' signInUser()'>Entrar</button>
+      <p class="message">Não possui conta? <a routerLink="/cadastro">Registre-se</a></p>
+    </div>
+  </div>
+</div>

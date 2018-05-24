@@ -1,0 +1,12 @@
+<div class="login-page">
+  <div class="form">
+      <h2>Cadastro</h2>
+    <div class="register-form">
+      <input type="text" placeholder="E-mail" [(ngModel)] = 'email'/>
+      <input type="password" placeholder="Senha"  [(ngModel)] = 'senha' />    
+      <button (click) = 'registerUser()'>Cadastrar</button>
+      <p class="message">Já possui cadastro? <a routerLink="">Entre</a></p>
+    </div>
+   
+  </div>
+</div>

@@ -1,0 +1,111 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background-color: #f1f1f1;
+  }
+  
+  .reg {
+    background-color: #ffffff;
+    margin: 100px auto;
+    font-family: Raleway;
+    padding: 40px;
+    width: 70%;
+    min-width: 300px;
+    border: solid 5px #e2e2e2
+  }
+  
+  h1 {
+    text-align: center;  
+  }
+  
+  input {
+    padding: 10px;
+    width: 100%;
+    font-size: 17px;
+    font-family: Raleway;
+    
+  }
+
+  
+  /* Mark input boxes that gets an error on validation: */
+
+  
+  .bt {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 17px;
+    font-family: Raleway;
+    cursor: pointer;
+    text-align:center
+  }
+
+  
+  button:hover {
+    opacity: 0.8;
+  }
+  
+  #prevBtn {
+    background-color: #bbbbbb;
+  }
+
+  
+  /* Make circles that indicate the steps of the form: */
+  .step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbbbbb;
+    border: none;  
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+  }
+
+  .active{
+    opacity: 1;
+  }
+  .finish {
+    background-color: #4CAF50;
+  }
+
+#select{
+  margin-left:40px;
+  margin-top:20px;
+  font-size:18px;
+  color: black;
+  font-family: Raleway;
+}
+
+#simulado{
+  box-shadow: 10px 10px 10px 10px #888888
+}
+select{
+
+    width: 250px; /* Tamanho do select, maior que o tamanho da div "div-select" */
+    height:30px; /* Altura do select, importante para que tenha a mesma altura em todo os navegadores */
+    border:1px solid #ddd;
+ 
+}
+.nav.nav-tabs.justify-content-start{
+  margin-bottom:15px
+}
+
+
+/* Aparência que terá o seletor de arquivo */
+input[type='file'] {
+  display: none
+}
+
+/* Aparência que terá o seletor de arquivo */
+#labelFile {
+  background-color: red!important;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  margin: 10px;
+  padding: 6px 20px
+}
