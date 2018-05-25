@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/take'
-
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
@@ -14,8 +14,8 @@ export class AuthGuardService implements CanActivate {
 
   user:Observable<firebase.User>;
   authenticated:boolean = false;
-  constructor(public fire:AngularFireAuth,private router:Router) {
-
+  constructor(public fire:AngularFireAuth,private router:Router,public server:AuthService) {
+/*
     this.fire.authState.subscribe((auth) =>{
       console.log(auth)
         if(auth !== null){
@@ -25,6 +25,7 @@ export class AuthGuardService implements CanActivate {
           this.authenticated = false; 
         }
     })
+    */
    }
 
 
@@ -36,7 +37,7 @@ export class AuthGuardService implements CanActivate {
       state: RouterStateSnapshot
 
   ):Observable<boolean> | boolean{
-
+/*
     if(this.authenticated){
       return true;
     }else{
@@ -45,8 +46,14 @@ export class AuthGuardService implements CanActivate {
       return false;
     }
   
-
-
+*/
+  if (this.server.authUser())
+  return true;
+  else {
+  console.log('You must be logged in');
+  this.router.navigate(['']);
+  return false;
+}
   }
 
  

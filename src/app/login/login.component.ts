@@ -5,7 +5,7 @@ import {Router} from '@angular/router'
 import { Observable } from 'rxjs/Observable';
 import swal from 'sweetalert2'
 import * as firebase from 'firebase/app';
-
+import { AuthService } from '../guards/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
    autent:any;
 
 
-  constructor(private fire: AngularFireAuth,private router:Router) {
+  constructor(private fire: AngularFireAuth,private router:Router,public server:AuthService) {
     this.fire.auth.signOut();
     
    }
@@ -28,33 +28,17 @@ export class LoginComponent implements OnInit {
 
  
   }
-
-
-
-  
-  signInUser(){
-  
-    this.fire.auth.signInWithEmailAndPassword(this.email,this.senha)
-   
-    .then(data =>{
-     
-        console.log('got some data', this.fire.auth.currentUser);
-    
-        this.router.navigate(['simulado'])
-       
-      
-      
-    })
-    
-    .catch(error => {
-    
-      
-      console.log('got an error',error)
-      alert('Email ou Senha incorreto!');
-
-  });
-  
-
-    
-}
+/*
+  signInUser() {
+      this.fire.auth.signInWithEmailAndPassword(this.email, this.senha).then((user) => {        
+        this.router.navigate(['simulado']);
+      }) .catch(error => {
+        console.log('got an error',error);
+        alert('Email ou Senha incorreto!')
+    });
+  }
+  */
+ signInUser(){
+    this.server.signInUser(this.email,this.senha);
+ }
 }

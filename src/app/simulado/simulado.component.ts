@@ -51,12 +51,13 @@ export class SimuladoComponent implements OnInit {
   respostaCorreta:string;
   respostaCorretaEditar:string;
   respostaCorretaBackground:string;
+  user:string;
   @ViewChild('valuePath') valuePath; 
    
   constructor(public database:AngularFireDatabase,private modalService: NgbModal, public fire:AngularFireAuth) {
    
    
-
+    this.user = this.fire.auth.currentUser.email;
     this.disciplinas = ['Ética','Filosofia','Constitucional','Direito Humanos','Internacional','Tributário','Administrativo','Ambiental','Civil','ECA','CDC','Empresarial','Processo Civil','Penal','Processo Penal','Direito do Trabalho','Processo do Trabalho']
     this.disciplina = this.disciplinas[0];
     // LISTA AS PERGUNTAS DO FIREBASE
@@ -143,7 +144,7 @@ private getDismissReason(reason: any): string {
       this.justificativaresposta4Editar = null;
     }
   
-   
+   console.log(this.fire.auth.currentUser.email);
     this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).update(this.keyEditar,{
 
 
@@ -155,13 +156,14 @@ private getDismissReason(reason: any): string {
         resposta4: this.resposta4Editar
       },
       respostaCorreta: this.respostaCorretaEditar,
+      ModificadaPor: this.user,
       justificativas:{
         justificativaresposta1: this.justificativaresposta1Editar,
         justificativaresposta2: this.justificativaresposta2Editar,
         justificativaresposta3: this.justificativaresposta3Editar,
         justificativaresposta4: this.justificativaresposta4Editar
-      }, 
-      ModificadaPor: this.fire.auth.currentUser.email
+      }
+     
     });
   
   }
@@ -175,63 +177,70 @@ private getDismissReason(reason: any): string {
 
 // MUDAR DE PÁGINA
 
-  next(number:number){
-          if(this.pergunta !== undefined && this.currentTab === 0 && number !== -1 && this.pergunta !== "" ){
-          this.currentTab = this.currentTab + number;
-          
-          }
-          else if(this.resposta1 !== undefined && this.currentTab === 1 && this.resposta1 !== ""){
-            this.currentTab = this.currentTab + number;
-          }
-          else if(this.resposta2 !== undefined && this.currentTab === 2 && this.resposta2 !== ""){
-            this.currentTab = this.currentTab + number;
-          }
-          else if(this.resposta3 !== undefined && this.currentTab === 3 && this.resposta3 !== ""){
-            this.currentTab = this.currentTab + number;
-            
-          }
-          else if(this.resposta4 !== undefined && this.currentTab === 4 && this.resposta4 !== "" && this.respostaCorreta !== "" || this.respostaCorreta !== undefined){
-            this.currentTab = this.currentTab + number;
-            // INSERIR DADOS NO FIREBASE
-            if(this.justificativaresposta1 === undefined || this.justificativaresposta1 === ""){
-              this.justificativaresposta1 = null;
-            }
-            if(this.justificativaresposta2 === undefined || this.justificativaresposta2 === ""){
-              this.justificativaresposta2 = null;
-            }
-            if(this.justificativaresposta3 === undefined || this.justificativaresposta3 === ""){
-              this.justificativaresposta3 = null;
-            }
-            if(this.justificativaresposta4 === undefined || this.justificativaresposta4 === ""){
-              this.justificativaresposta4 = null;
-            }
-            
-            this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).push({
-                  pergunta: this.pergunta, 
-                  ano: this.valueYear,
-                  criadaPor: this.fire.auth.currentUser.email,
-                  ModificadaPor: this.fire.auth.currentUser.email,
-                  respostaCorreta: this.respostaCorreta,
-                  respostas: {
-                            resposta1: "a)" + this.resposta1,
-                            resposta2: "b)" +  this.resposta2,
-                            resposta3: "c)" + this.resposta3,
-                            resposta4: "d)" + this.resposta4
-                          },
-                   justificativas: {
-                            justificativaresposta1: this.justificativaresposta1,
-                            justificativaresposta2: this.justificativaresposta2,
-                            justificativaresposta3: this.justificativaresposta3,
-                            justificativaresposta4: this.justificativaresposta4
-                          }
-                 
-
-              })
-          }else if (number === -1 &&  this.currentTab > 0 ){
-            this.currentTab = this.currentTab + number;
-          }
-   
+  
+next(number:number){
+  if(this.pergunta !== undefined && this.currentTab === 0 && number !== -1 && this.pergunta !== "" ){
+  this.currentTab = this.currentTab + number;
+  
   }
+  else if(this.resposta1 !== undefined && this.currentTab === 1 && this.resposta1 !== "" &&  this.justificativaresposta1 !== undefined  && this.justificativaresposta1 !== "" && this.justificativaresposta1 !== null){
+    this.currentTab = this.currentTab + number;
+  }
+  else if(this.resposta2 !== undefined && this.currentTab === 2 && this.resposta2 !== "" &&  this.justificativaresposta2 !== undefined  && this.justificativaresposta2 !== "" && this.justificativaresposta2 !== null){
+    this.currentTab = this.currentTab + number;
+  }
+  else if(this.resposta3 !== undefined && this.currentTab === 3 && this.resposta3 !== "" &&  this.justificativaresposta3 !== undefined  && this.justificativaresposta3 !== "" && this.justificativaresposta3 !== null){
+    this.currentTab = this.currentTab + number;
+    
+  }
+  else if(this.resposta4 !== undefined && this.currentTab === 4 && this.resposta4 !== ""  &&  this.justificativaresposta4 !== undefined  && this.justificativaresposta4 !== "" && this.justificativaresposta4 !== null){
+    this.currentTab = this.currentTab + number;
+    console.log(this.currentTab)
+  }
+  else if(this.respostaCorreta !== undefined && this.respostaCorreta !== null && this.respostaCorreta !== "" && this.currentTab === 5){
+    this.currentTab = this.currentTab + number;
+    
+  
+    // INSERIR DADOS NO FIREBASE
+    if(this.justificativaresposta1 === undefined || this.justificativaresposta1 === ""){
+      this.justificativaresposta1 = null;
+    }
+    if(this.justificativaresposta2 === undefined || this.justificativaresposta2 === ""){
+      this.justificativaresposta2 = null;
+    }
+    if(this.justificativaresposta3 === undefined || this.justificativaresposta3 === ""){
+      this.justificativaresposta3 = null;
+    }
+    if(this.justificativaresposta4 === undefined || this.justificativaresposta4 === ""){
+      this.justificativaresposta4 = null;
+    }
+    
+    this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).push({
+          pergunta: this.pergunta, 
+          ano: this.valueYear,
+          criadaPor: this.user,
+          ModificadaPor: this.user,
+          respostaCorreta: this.respostaCorreta,
+          respostas: {
+                    resposta1: "a)" + this.resposta1,
+                    resposta2: "b)" +  this.resposta2,
+                    resposta3: "c)" + this.resposta3,
+                    resposta4: "d)" + this.resposta4
+                  },
+           justificativas: {
+                    justificativaresposta1: this.justificativaresposta1,
+                    justificativaresposta2: this.justificativaresposta2,
+                    justificativaresposta3: this.justificativaresposta3,
+                    justificativaresposta4: this.justificativaresposta4
+                  }
+         
+
+      })
+  }else if (number === -1 &&  this.currentTab > 0 ){
+    this.currentTab = this.currentTab + number;
+  }
+
+}
   // INSERIR NOVA PERGUNTA
   novaPergunta(){
     this.currentTab = 0;
@@ -266,12 +275,22 @@ private getDismissReason(reason: any): string {
           }else
           if(this.result[x].respostaCorreta == null || this.result[x].respostaCorreta == undefined || this.result[x].respostaCorreta == "" ){
             this.validacao = 1;
-          }else{
+          }else 
+          if(
+              (this.result[x].justificativaresposta1 == null || this.result[x].justificativaresposta1 == undefined || this.result[x].justificativaresposta1 == "") ||
+              (this.result[x].justificativaresposta2 == null || this.result[x].justificativaresposta2 == undefined || this.result[x].justificativaresposta2 == "") ||
+              (this.result[x].justificativaresposta3 == null || this.result[x].justificativaresposta3 == undefined || this.result[x].justificativaresposta3 == "") ||
+              (this.result[x].justificativaresposta4 == null || this.result[x].justificativaresposta4 == undefined || this.result[x].justificativaresposta4 == "") 
+            ){
+              this.validacao = 1;
+          }
+          else{
             if(y ==0){
              validacao = confirm('Deseja inserir o arquivo na base de dados?');
           }
             if(validacao === true){
               this.validacao = 2;
+
         this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).push({
           pergunta: this.result[x].Pergunta, 
           ano: this.valueYear,

@@ -54,11 +54,12 @@ export class ProvaComponent implements OnInit {
   respostaCorretaEditar:string;
   respostaCorretaBackground:string;
   @ViewChild('valuePath') valuePath; 
+  user:string;
    
   constructor(public database:AngularFireDatabase,private modalService: NgbModal, public fire:AngularFireAuth) {
    
    
-
+    this.user = this.fire.auth.currentUser.email;
     this.disciplinas = ['Ética','Filosofia','Constitucional','Direito Humanos','Internacional','Tributário','Administrativo','Ambiental','Civil','ECA','CDC','Empresarial','Processo Civil','Penal','Processo Penal','Direito do Trabalho','Processo do Trabalho']
     this.disciplina = this.disciplinas[0];
     // LISTA AS PERGUNTAS DO FIREBASE
@@ -163,7 +164,7 @@ private getDismissReason(reason: any): string {
         justificativaresposta3: this.justificativaresposta3Editar,
         justificativaresposta4: this.justificativaresposta4Editar
       }, 
-      ModificadaPor: this.fire.auth.currentUser.email
+      ModificadaPor: this.user
     });
   
   }
@@ -182,18 +183,24 @@ private getDismissReason(reason: any): string {
           this.currentTab = this.currentTab + number;
           
           }
-          else if(this.resposta1 !== undefined && this.currentTab === 1 && this.resposta1 !== ""){
+          else if(this.resposta1 !== undefined && this.currentTab === 1 && this.resposta1 !== "" &&  this.justificativaresposta1 !== undefined  && this.justificativaresposta1 !== "" && this.justificativaresposta1 !== null){
             this.currentTab = this.currentTab + number;
           }
-          else if(this.resposta2 !== undefined && this.currentTab === 2 && this.resposta2 !== ""){
+          else if(this.resposta2 !== undefined && this.currentTab === 2 && this.resposta2 !== "" &&  this.justificativaresposta2 !== undefined  && this.justificativaresposta2 !== "" && this.justificativaresposta2 !== null){
             this.currentTab = this.currentTab + number;
           }
-          else if(this.resposta3 !== undefined && this.currentTab === 3 && this.resposta3 !== ""){
+          else if(this.resposta3 !== undefined && this.currentTab === 3 && this.resposta3 !== "" &&  this.justificativaresposta3 !== undefined  && this.justificativaresposta3 !== "" && this.justificativaresposta3 !== null){
             this.currentTab = this.currentTab + number;
             
           }
-          else if(this.resposta4 !== undefined && this.currentTab === 4 && this.resposta4 !== "" && this.respostaCorreta !== "" || this.respostaCorreta !== undefined){
+          else if(this.resposta4 !== undefined && this.currentTab === 4 && this.resposta4 !== ""  &&  this.justificativaresposta4 !== undefined  && this.justificativaresposta4 !== "" && this.justificativaresposta4 !== null){
             this.currentTab = this.currentTab + number;
+            console.log(this.currentTab)
+          }
+          else if(this.respostaCorreta !== undefined && this.respostaCorreta !== null && this.respostaCorreta !== "" && this.currentTab === 5){
+            this.currentTab = this.currentTab + number;
+            
+          
             // INSERIR DADOS NO FIREBASE
             if(this.justificativaresposta1 === undefined || this.justificativaresposta1 === ""){
               this.justificativaresposta1 = null;
@@ -211,8 +218,8 @@ private getDismissReason(reason: any): string {
             this.database.list('prova/' + this.valueYear + '/' + this.disciplina).push({
                   pergunta: this.pergunta, 
                   ano: this.valueYear,
-                  criadaPor: this.fire.auth.currentUser.email,
-                  ModificadaPor: this.fire.auth.currentUser.email,
+                  criadaPor: this.user,
+                  ModificadaPor: this.user,
                   respostaCorreta: this.respostaCorreta,
                   respostas: {
                             resposta1: "a)" + this.resposta1,
@@ -232,7 +239,7 @@ private getDismissReason(reason: any): string {
           }else if (number === -1 &&  this.currentTab > 0 ){
             this.currentTab = this.currentTab + number;
           }
-   
+        
   }
   // INSERIR NOVA PERGUNTA
   novaPergunta(){

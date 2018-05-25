@@ -14,7 +14,7 @@ import { RegistroComponent } from './registro/registro.component';
 import {AngularFireAuthModule} from 'angularfire2/auth';
 import { AuthGuardService } from './guards/auth-guard.service';
 import { XlsxToJsonServiceService } from './guards/xlsx-to-json-service.service';
-
+import { AuthService } from './guards/auth.service';
 import { HttpModule } from '@angular/http';
 const firebaseAuth  = {
   apiKey: "AIzaSyBQsMou8CwzNNRvpz6Xd8zti9dCl6spVLQ",
@@ -49,7 +49,7 @@ const firebaseAuth  = {
     
     
   ],
-  providers: [AuthGuardService,XlsxToJsonServiceService],
+  providers: [AuthGuardService,XlsxToJsonServiceService,AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
