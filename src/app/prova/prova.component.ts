@@ -5,6 +5,7 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {Router} from '@angular/router'
 import { XlsxToJsonServiceService } from '../guards/xlsx-to-json-service.service';
+import swal from 'sweetalert2'
 @Component({
   selector: 'app-prova',
   templateUrl: './prova.component.html',
@@ -170,11 +171,28 @@ private getDismissReason(reason: any): string {
   }
 
   delete(key:string){
-    let validacao = confirm('Deseja realmente exluir esse item?')
-    if(validacao === true){
-    this.database.list('prova/' + this.valueYear + '/' + this.disciplina).remove(key)
-    }
+ 
+
+    swal({
+      title: 'Tem certeza que deseja excluir essa pergunta?',
+      text: "Você não poderá reverter isso!!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, excluir!'
+    }).then((result) => {
+      if (result.value) {
+        this.database.list('prova/' + this.valueYear + '/' + this.disciplina).remove(key);
+        swal(
+          'Excluído!',
+          'A pergunta foi deletada com sucesso!.',
+          'success'
+        )
+      }
+    })
   }
+
 
 // MUDAR DE PÁGINA
 
@@ -276,10 +294,7 @@ private getDismissReason(reason: any): string {
           if(this.result[x].respostaCorreta == null || this.result[x].respostaCorreta == undefined || this.result[x].respostaCorreta == "" ){
             this.validacao = 1;
           }else{
-            if(y ==0){
-             validacao = confirm('Deseja inserir o arquivo na base de dados?');
-          }
-            if(validacao === true){
+            
               this.validacao = 2;
         this.database.list('prova/' + this.valueYear + '/' + this.disciplina).push({
           pergunta: this.result[x].Pergunta, 
@@ -307,7 +322,7 @@ private getDismissReason(reason: any): string {
     y++;
   }
   
-  }
+  
 
   
 }

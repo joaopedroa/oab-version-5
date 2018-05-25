@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {AngularFireAuth} from 'angularfire2/auth';
 import { EventEmitter } from 'events';
-import {Router} from '@angular/router'
+import {Router} from '@angular/router';
+import swal from 'sweetalert2';
 @Injectable()
 export class AuthService {
   authState
@@ -13,7 +14,8 @@ export class AuthService {
       this.router.navigate(['simulado']);
     }) .catch(error => {
       console.log('got an error',error);
-      alert('Email ou Senha incorreto!')
+     // alert('Email ou Senha incorreto!')
+     swal("Erro ao efetuar login!", "Email ou senha incorreto!", "error");
   });
 }
 

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {AngularFireAuth} from 'angularfire2/auth';
 import { XlsxToJsonServiceService } from '../guards/xlsx-to-json-service.service';
+import swal from 'sweetalert2'
 @Component({
   selector: 'app-simulado',
   templateUrl: './simulado.component.html',
@@ -16,7 +17,7 @@ export class SimuladoComponent implements OnInit {
   public result:any ;
   private xlsxToJsonService: XlsxToJsonServiceService = new XlsxToJsonServiceService();
   validacao:number = 0;
-  
+  validacaoSwal:boolean;
   //DECLARAÇÃO DAS VARIAVEIS
   currentTab:number = 0;
   pergunta:string;
@@ -169,10 +170,26 @@ private getDismissReason(reason: any): string {
   }
 
   delete(key:string){
-    let validacao = confirm('Deseja realmente exluir esse item?')
-    if(validacao === true){
-    this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).remove(key)
-    }
+ 
+
+    swal({
+      title: 'Tem certeza que deseja excluir essa pergunta?',
+      text: "Você não poderá reverter isso!!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, excluir!'
+    }).then((result) => {
+      if (result.value) {
+        this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).remove(key);
+        swal(
+          'Excluído!',
+          'A pergunta foi deletada com sucesso!.',
+          'success'
+        )
+      }
+    })
   }
 
 // MUDAR DE PÁGINA
@@ -285,10 +302,7 @@ next(number:number){
               this.validacao = 1;
           }
           else{
-            if(y ==0){
-             validacao = confirm('Deseja inserir o arquivo na base de dados?');
-          }
-            if(validacao === true){
+            
               this.validacao = 2;
 
         this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).push({
@@ -316,7 +330,7 @@ next(number:number){
     }
     y++;
   }
+
   
-  }
 
 }

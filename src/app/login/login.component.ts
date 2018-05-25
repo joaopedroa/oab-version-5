@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import swal from 'sweetalert2'
 import * as firebase from 'firebase/app';
 import { AuthService } from '../guards/auth.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
