@@ -1,0 +1,46 @@
+<div class = 'row'>
+  <div class = 'col-lg-3'>
+      <label>Caderno:</label>
+      <select [(ngModel)] = 'tipoCaderno' (change) = 'changeTipoCaderno()'>
+        <option value="simulado">Simulado</option>
+        <option value="prova">Prova</option>
+      </select>
+    </div>
+  <div class = 'col-lg-4'>
+      <label>Ano:</label>
+      <select [(ngModel)] = 'year' >
+          <option value="{{item}}" *ngFor = 'let item of itemYear'>{{item}}</option>
+          
+       </select>
+  </div> 
+  <div class = 'col-lg-2'>
+    <button (click) = 'consultar()'>Consultar</button>
+</div> 
+</div>
+
+<kendo-chart [categoryAxis]="{categories:dadosLegenda}">
+  <kendo-chart-title text="Perguntas No Ano {{year}}"></kendo-chart-title>
+  <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
+  <kendo-chart-tooltip></kendo-chart-tooltip>
+  <kendo-chart-series>
+    <kendo-chart-series-item *ngFor= "let x of dadosLegenda"   [data] = 'dadosSeries' [name]='dadosLegenda'>
+      </kendo-chart-series-item>
+      
+  </kendo-chart-series>
+</kendo-chart>
+
+
+<!--
+<kendo-chart [categoryAxis]="{categories:dadosSeries}">
+  <kendo-chart-title text="Student Exam Results"></kendo-chart-title>
+  <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
+  <kendo-chart-tooltip></kendo-chart-tooltip>
+  <kendo-chart-series>
+    <kendo-chart-series-item *ngFor= "let dadosLegenda of dadosLegenda"  [data] = 'dadosSeries' [name]='dadosLegenda'>
+      </kendo-chart-series-item>
+  </kendo-chart-series>
+</kendo-chart>
+
+
+
+-->

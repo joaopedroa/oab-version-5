@@ -274,8 +274,8 @@ next(number:number){
   }
 
   enviarPerguntaUpload(){
-      let y = 0;
-     let validacao;
+      
+     
         for(let x in this.result){
 
           if(this.result[x].Pergunta == null || this.result[x].Pergunta == undefined || this.result[x].Pergunta == "" ){
@@ -328,7 +328,7 @@ next(number:number){
       })
     }
     }
-    y++;
+  
   }
 
   

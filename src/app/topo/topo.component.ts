@@ -3,7 +3,7 @@ import {AngularFireAuth} from 'angularfire2/auth';
 import { EventEmitter } from 'protractor';
 import {Router} from '@angular/router'
 import * as firebase from 'firebase/app';
-
+import { AuthService } from '../guards/auth.service';
 import { Observable } from 'rxjs/Observable';
 
 
@@ -18,9 +18,9 @@ export class TopoComponent implements OnInit {
   
   user:Observable<firebase.User>;
   authenticated:boolean = false;
-  constructor(public fire:AngularFireAuth,public router:Router) {    
+  
+  constructor(public fire:AngularFireAuth,public router:Router,public server:AuthService) {    
     this.fire.authState.subscribe((auth) =>{
-      console.log(auth)
         if(auth !== null){
           this.user = fire.authState;
           this.authenticated = true;
@@ -30,6 +30,8 @@ export class TopoComponent implements OnInit {
     })
 
 
+
+  
   }
 
   ngOnInit(){
@@ -37,7 +39,6 @@ export class TopoComponent implements OnInit {
    
 
   }
-
  
  
     logOut(){

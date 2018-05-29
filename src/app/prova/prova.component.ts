@@ -275,8 +275,7 @@ private getDismissReason(reason: any): string {
   }
 
   enviarPerguntaUpload(){
-      let y = 0;
-     let validacao;
+     
         for(let x in this.result){
 
           if(this.result[x].Pergunta == null || this.result[x].Pergunta == undefined || this.result[x].Pergunta == "" ){
@@ -319,7 +318,7 @@ private getDismissReason(reason: any): string {
       })
     }
     }
-    y++;
+   
   }
   
   

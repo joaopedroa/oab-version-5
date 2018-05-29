@@ -16,6 +16,10 @@ import { AuthGuardService } from './guards/auth-guard.service';
 import { XlsxToJsonServiceService } from './guards/xlsx-to-json-service.service';
 import { AuthService } from './guards/auth.service';
 import { HttpModule } from '@angular/http';
+import { GraphComponent } from './graph/graph.component';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations'
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import "hammerjs"
 const firebaseAuth  = {
   apiKey: "AIzaSyBQsMou8CwzNNRvpz6Xd8zti9dCl6spVLQ",
   authDomain: "trabmontanha-afa5c.firebaseapp.com",
@@ -33,7 +37,8 @@ const firebaseAuth  = {
     SimuladoComponent,
     ProvaComponent,
     LoginComponent,
-    RegistroComponent
+    RegistroComponent,
+    GraphComponent
  
    
   ],
@@ -45,7 +50,9 @@ const firebaseAuth  = {
     AngularFireDatabaseModule,
     NgbModule.forRoot(),
     AngularFireAuthModule,
-    HttpModule
+    HttpModule,
+    BrowserAnimationsModule,
+    ChartsModule
     
     
   ],
