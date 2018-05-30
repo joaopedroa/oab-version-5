@@ -8,7 +8,7 @@
     </div>
   <div class = 'col-lg-4'>
       <label>Ano:</label>
-      <select [(ngModel)] = 'year' >
+      <select [(ngModel)] = 'year' (change) = 'changeYear()' >
           <option value="{{item}}" *ngFor = 'let item of itemYear'>{{item}}</option>
           
        </select>
@@ -18,29 +18,27 @@
 </div> 
 </div>
 
-<kendo-chart [categoryAxis]="{categories:dadosLegenda}">
-  <kendo-chart-title text="Perguntas No Ano {{year}}"></kendo-chart-title>
+<kendo-chart *ngIf = 'showChart'>
+  <kendo-chart-title text="Total perguntas de {{tipoCaderno}} do ano de {{year}}"></kendo-chart-title>
   <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
   <kendo-chart-tooltip></kendo-chart-tooltip>
   <kendo-chart-series>
-    <kendo-chart-series-item *ngFor= "let x of dadosLegenda"   [data] = 'dadosSeries' [name]='dadosLegenda'>
+    <kendo-chart-series-item *ngFor= "let x of series"   [data] = 'x.valor' [name]='x.nome'>
       </kendo-chart-series-item>
       
   </kendo-chart-series>
 </kendo-chart>
 
-
 <!--
-<kendo-chart [categoryAxis]="{categories:dadosSeries}">
+
+<kendo-chart [categoryAxis]="{categories:categoryLine2}">
   <kendo-chart-title text="Student Exam Results"></kendo-chart-title>
   <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
   <kendo-chart-tooltip></kendo-chart-tooltip>
   <kendo-chart-series>
-    <kendo-chart-series-item *ngFor= "let dadosLegenda of dadosLegenda"  [data] = 'dadosSeries' [name]='dadosLegenda'>
+    <kendo-chart-series-item *ngFor= "let x of seriesLine" type="line" [data] = 'x.valor' [name]='x.nome'>
       </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>
-
-
 
 -->

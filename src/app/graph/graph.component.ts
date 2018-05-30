@@ -12,37 +12,25 @@ export class GraphComponent implements OnInit {
   itemYear:any = [];
   year:string = this.itemYear[0];
   perguntas: Observable<any[]>;
+  //======chart bar======
   graficoLegend: Observable<any[]>;
   graficoData: Observable<any[]>;
   dadosLegenda:Array<any> = [];
   dadosSeries:Array<any> = [];
-  series = {};
-  cart = [];
-/*
-    years:Array<Number> = [2012,2013,2014,2015];
-    students = [
-      {
-        name: "João",
-        results: [90,70,55,40]
-      },
-      {
-        name: "Pedro",
-        results: [100,70,55,14]
-      },
-      {
-        name: "Fabricio",
-        results: [50,70,55,4]
-      },
-      {
-        name: "Eduardo",
-        results: [30,70,55,32]
-      },
-      {
-        name: "Marcos",
-        results: [10,7,5,44]
-      }
-    ]
-    */
+  series = [];
+  showChart:boolean = false;
+  //======================
+  //======chart line======
+  graficoLegendLineSimulado: Observable<any[]>;
+  graficoLegendLineProva: Observable<any[]>;
+  seriesLine = [];
+  categoryLine = [];
+  categoryLine2 = [];
+
+
+
+   //================
+   
     
   constructor(public database:AngularFireDatabase,private modalService: NgbModal) { 
 
@@ -65,47 +53,96 @@ this.perguntas.forEach(item => {
 }
 
 consultar(){
+  ///===========BARRA===========
+  this.showChart = true;
   this.dadosLegenda = [];
   this.dadosSeries = [];
-
-  //================LEGENDAS=============
+  this.series = [];
+  this.seriesLine = [];
+  this.categoryLine = [];
+ 
 this.graficoLegend = this.database.list(this.tipoCaderno + '/',ref => ref.orderByKey().equalTo(this.year)).snapshotChanges().map(arr => {
   return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
 });
 this.graficoLegend.forEach(item => { 
 
-  for(let x in item[0]){   
-//    console.log(x);
-    if(x !== '$key'){
-    this.dadosLegenda.push(x);
-   
-   this.dadosSeries.push(Object.keys((item[0][x])).length);
+  let aux = Object.keys(item[0]).length - 1;
   
-  
-  //  this.getSeries(x);
+  for(let x=0;x<aux;x++) {
    
+        if( Object.keys(item[0])[x] !== '$key'){
+          this.dadosLegenda.push(Object.keys(item[0])[x]);
+          let my_obj = Object.create({}, { getFoo: { value: function() { return this.nome, this.valor;  } } });        
+          my_obj.nome = Object.keys(item[0])[x];
+         
+          my_obj.valor =JSON.parse("[" +  Object.keys(Object.values(item[0] )[x]).length + "]");
+          this.series.push(my_obj);
     }
+
     
 }
 });
+///===========LINE===========
 
-console.log(this.dadosLegenda);
-console.log(this.dadosSeries);
+this.graficoLegendLineSimulado = this.database.list('simulado/').snapshotChanges().map(arr => {
+  return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+});
+this.graficoLegendLineProva = this.database.list('prova/').snapshotChanges().map(arr => {
+  return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+});
 
-console.log(this.cart);
+this.graficoLegendLineSimulado.forEach(item =>{
+ // console.log(item);
+  let aux = 0;
+  for(let x = 0;x<item.length;x++){
+    aux = 0;
+    let my_obj = Object.create({}, { getFoo: { value: function() { return this.nome, this.valor;  } } });  
+   // console.log( 'ano', Object.values(Object.values(item[x])));
+   // my_obj.nome = item[x].$key;
+   my_obj.nome = 'Simulado';
+    this.categoryLine.push(item[x].$key);
+      for(let y = 0;y<Object.values(Object.values(item[x])).length -1;y++){
+        aux +=  Object.keys(Object.values(Object.values(item[x]))[y]).length;
+     //   console.log('valor',Object.keys(Object.values(Object.values(item[x]))[y]).length);
+      }
+      my_obj.valor = JSON.parse("[" + aux  + "]");     
+   this.seriesLine.push(my_obj);
+  }
+});
+//console.log('series',this.seriesLine);
+
+this.graficoLegendLineProva.forEach(item =>{
+  console.log(item);
+  let aux = 0;
+  for(let x = 0;x<item.length;x++){
+    aux = 0;
+    let my_obj = Object.create({}, { getFoo: { value: function() { return this.nome, this.valor;  } } });  
+    console.log( 'ano', Object.values(Object.values(item[x])));
+    //my_obj.nome = item[x].$key;
+    my_obj.nome = 'Prova';
+    this.categoryLine.push(item[x].$key);
+      for(let y = 0;y<Object.values(Object.values(item[x])).length -1;y++){
+        aux +=  Object.keys(Object.values(Object.values(item[x]))[y]).length;
+        console.log('valor',Object.keys(Object.values(Object.values(item[x]))[y]).length);
+      }
+      my_obj.valor = JSON.parse("[" + aux  + "]");     
+   this.seriesLine.push(my_obj);
+  }
+});
+console.log('series',this.seriesLine);
+
 }
 
+onlyUnique(value, index, self) { 
+  return self.indexOf(value) === index;
+}
 
-getSeries(x,y){
-  for(let x =0 ;x <4 ;x++){
-   this.series["nome"] = x;
-   this.series["valor"] = y;
-   this.cart.push(this.series);
-  }
-
+changeYear(){
+  this.showChart = false;
 }
 
  changeTipoCaderno(){
+   this.showChart = false;
  // =============PERGUNTAS===================
  this.perguntas = this.database.list(this.tipoCaderno).snapshotChanges().map(arr => {
   return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
@@ -122,6 +159,8 @@ this.perguntas.forEach(item => {
     this.year = item[0].$key;
 });
 //=======================================
+
+
  }
 
   ngOnInit() {
