@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import {AngularFireDatabase} from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { ChartComponent } from '@progress/kendo-angular-charts';
+import { saveAs } from '@progress/kendo-file-saver';
+import { exportPDF } from '@progress/kendo-drawing/pdf';
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
@@ -12,6 +15,9 @@ export class GraphComponent implements OnInit {
   itemYear:any = [];
   year:string = this.itemYear[0];
   perguntas: Observable<any[]>;
+  dataYear:any = new Date().getFullYear();
+  yearTotalSelect:Array<any> = [];
+  yearTotalSelectSort:Array<any> = [];
   //======chart bar======
   graficoLegend: Observable<any[]>;
   graficoData: Observable<any[]>;
@@ -34,6 +40,13 @@ export class GraphComponent implements OnInit {
     
   constructor(public database:AngularFireDatabase,private modalService: NgbModal) { 
 
+ // FOR PARA DADOS DO SELECT YEAR
+ for(let x=0;x<20;x++)
+ {
+   this.yearTotalSelect.push(this.dataYear);
+   this.dataYear--;
+ }
+this.yearTotalSelectSort=this.yearTotalSelect.sort();
  // =============SELECT===================
 
    this.perguntas = this.database.list(this.tipoCaderno).snapshotChanges().map(arr => {
@@ -51,6 +64,8 @@ this.perguntas.forEach(item => {
 
 
 }
+
+
 
 consultar(){
   ///===========BARRA===========
@@ -91,45 +106,83 @@ this.graficoLegendLineProva = this.database.list('prova/').snapshotChanges().map
   return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
 });
 
-this.graficoLegendLineSimulado.forEach(item =>{
- // console.log(item);
-  let aux = 0;
-  for(let x = 0;x<item.length;x++){
-    aux = 0;
-    let my_obj = Object.create({}, { getFoo: { value: function() { return this.nome, this.valor;  } } });  
-   // console.log( 'ano', Object.values(Object.values(item[x])));
-   // my_obj.nome = item[x].$key;
-   my_obj.nome = 'Simulado';
-    this.categoryLine.push(item[x].$key);
-      for(let y = 0;y<Object.values(Object.values(item[x])).length -1;y++){
-        aux +=  Object.keys(Object.values(Object.values(item[x]))[y]).length;
-     //   console.log('valor',Object.keys(Object.values(Object.values(item[x]))[y]).length);
-      }
-      my_obj.valor = JSON.parse("[" + aux  + "]");     
-   this.seriesLine.push(my_obj);
-  }
-});
-//console.log('series',this.seriesLine);
+//PROVA LINE
 
 this.graficoLegendLineProva.forEach(item =>{
-  console.log(item);
+  this.categoryLine = [];
   let aux = 0;
+  let my_obj = Object.create({}, { getFoo: { value: function() { return this.nome, this.valor;  } } });  
+  my_obj.nome = 'Prova';
+  let validaValores:any = [];
+  validaValores = this.yearTotalSelect.sort();
+  let totalValores:any = [];
+
   for(let x = 0;x<item.length;x++){
-    aux = 0;
-    let my_obj = Object.create({}, { getFoo: { value: function() { return this.nome, this.valor;  } } });  
-    console.log( 'ano', Object.values(Object.values(item[x])));
-    //my_obj.nome = item[x].$key;
-    my_obj.nome = 'Prova';
     this.categoryLine.push(item[x].$key);
+    
+  }
+  for(let y= 0 ; y< validaValores.length;y++){
+    totalValores.push("0");
+  }
+
+  for(let x = 0;x<item.length;x++){
+    aux = 0;   
+    
       for(let y = 0;y<Object.values(Object.values(item[x])).length -1;y++){
         aux +=  Object.keys(Object.values(Object.values(item[x]))[y]).length;
-        console.log('valor',Object.keys(Object.values(Object.values(item[x]))[y]).length);
-      }
-      my_obj.valor = JSON.parse("[" + aux  + "]");     
-   this.seriesLine.push(my_obj);
+  
+      }   
+     
+      totalValores[validaValores.indexOf(Number(item[x].$key))] = aux;     
+
+      my_obj.valor =  totalValores ;     
+   
   }
+  this.seriesLine.push(my_obj);
+ 
 });
-console.log('series',this.seriesLine);
+
+
+//SIMULADO LINE
+this.graficoLegendLineSimulado.forEach(item =>{
+  this.categoryLine = [];
+  let aux = 0;
+  let my_obj = Object.create({}, { getFoo: { value: function() { return this.nome, this.valor;  } } });  
+  my_obj.nome = 'Simulado';
+  let validaValores:any = [];
+  validaValores = this.yearTotalSelect.sort();
+  let totalValores:any = [];
+
+  for(let x = 0;x<item.length;x++){
+    this.categoryLine.push(item[x].$key);
+    
+  }
+  for(let y= 0 ; y< validaValores.length;y++){
+    totalValores.push("0");
+  }
+
+  for(let x = 0;x<item.length;x++){
+    aux = 0;   
+    
+ 
+      for(let y = 0;y<Object.values(Object.values(item[x])).length -1;y++){
+        aux +=  Object.keys(Object.values(Object.values(item[x]))[y]).length;
+   
+      }
+    
+     
+      totalValores[validaValores.indexOf(Number(item[x].$key))] = aux;
+       
+
+
+     
+      my_obj.valor =  totalValores ;     
+  
+  }
+  this.seriesLine.push(my_obj);
+ 
+});
+console.log('se', this.seriesLine)
 
 }
 

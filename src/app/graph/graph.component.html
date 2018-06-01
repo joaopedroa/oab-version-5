@@ -18,7 +18,7 @@
 </div> 
 </div>
 
-<kendo-chart *ngIf = 'showChart'>
+<kendo-chart *ngIf = 'showChart' >
   <kendo-chart-title text="Total perguntas de {{tipoCaderno}} do ano de {{year}}"></kendo-chart-title>
   <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
   <kendo-chart-tooltip></kendo-chart-tooltip>
@@ -29,10 +29,10 @@
   </kendo-chart-series>
 </kendo-chart>
 
-<!--
 
-<kendo-chart [categoryAxis]="{categories:categoryLine2}">
-  <kendo-chart-title text="Student Exam Results"></kendo-chart-title>
+
+<kendo-chart [categoryAxis]="{categories:yearTotalSelectSort}" *ngIf = 'showChart'>
+  <kendo-chart-title text="Simulado X Prova"></kendo-chart-title>
   <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
   <kendo-chart-tooltip></kendo-chart-tooltip>
   <kendo-chart-series>
@@ -41,4 +41,3 @@
   </kendo-chart-series>
 </kendo-chart>
 
--->
