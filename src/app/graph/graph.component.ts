@@ -5,6 +5,7 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { ChartComponent } from '@progress/kendo-angular-charts';
 import { saveAs } from '@progress/kendo-file-saver';
 import { exportPDF } from '@progress/kendo-drawing/pdf';
+
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
@@ -13,8 +14,10 @@ import { exportPDF } from '@progress/kendo-drawing/pdf';
 export class GraphComponent implements OnInit {
   tipoCaderno:string = "simulado";
   itemYear:any = [];
+  closeResult: string;
   year:string = this.itemYear[0];
   perguntas: Observable<any[]>;
+  perguntasModal: Observable<any[]>;
   dataYear:any = new Date().getFullYear();
   yearTotalSelect:Array<any> = [];
   yearTotalSelectSort:Array<any> = [];
@@ -32,12 +35,9 @@ export class GraphComponent implements OnInit {
   seriesLine = [];
   categoryLine = [];
   categoryLine2 = [];
+   //==modal==============
+   nameDisciplinaModal:string;
 
-
-
-   //================
-   
-    
   constructor(public database:AngularFireDatabase,private modalService: NgbModal) { 
 
  // FOR PARA DADOS DO SELECT YEAR
@@ -61,11 +61,7 @@ this.perguntas.forEach(item => {
     this.year = item[0].$key;
 });
 
-
-
 }
-
-
 
 consultar(){
   ///===========BARRA===========
@@ -163,19 +159,13 @@ this.graficoLegendLineSimulado.forEach(item =>{
 
   for(let x = 0;x<item.length;x++){
     aux = 0;   
-    
- 
+
       for(let y = 0;y<Object.values(Object.values(item[x])).length -1;y++){
         aux +=  Object.keys(Object.values(Object.values(item[x]))[y]).length;
    
       }
-    
-     
-      totalValores[validaValores.indexOf(Number(item[x].$key))] = aux;
-       
 
-
-     
+      totalValores[validaValores.indexOf(Number(item[x].$key))] = aux;    
       my_obj.valor =  totalValores ;     
   
   }
@@ -184,10 +174,6 @@ this.graficoLegendLineSimulado.forEach(item =>{
 });
 console.log('se', this.seriesLine)
 
-}
-
-onlyUnique(value, index, self) { 
-  return self.indexOf(value) === index;
 }
 
 changeYear(){
@@ -215,6 +201,37 @@ this.perguntas.forEach(item => {
 
 
  }
+ clickChart(event,content){
+  this.nameDisciplinaModal = event.series.name;
+  this.open(content);
+ 
+  this.perguntasModal = this.database.list(this.tipoCaderno + '/' + this.year + '/' + event.series.name).snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+  });
+
+ }
+
+ open(content) {
+
+  this.modalService.open(content, { size: 'lg' }).result.then((result) => {
+    this.closeResult = `Closed with: ${result}`;
+  }, (reason) => {
+    this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  });
+ 
+}
+private getDismissReason(reason: any): string {
+  if (reason === ModalDismissReasons.ESC) {
+    return 'by pressing ESC';
+  } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+    return 'by clicking on a backdrop';
+  } else {
+    return  `with: ${reason}`;
+  }
+}
+ 
+  
+
 
   ngOnInit() {
     
