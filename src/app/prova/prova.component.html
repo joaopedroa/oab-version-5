@@ -94,11 +94,11 @@
                 </div>
                 <div style="float:right;"  [ngStyle]="currentTab !== 6 && {'display':'block'} || currentTab === 6 && {'display':'none'}">
                     <button type="button" class = 'bt btn btn-sm btn-success' id="nextBtn" (click) = "next(1)"  [ngStyle]="currentTab !== 5 && {'display':'block'} || currentTab === 5 && {'display':'none'}">Próximo</button>
-                    <button type="button"  class = 'bt' id="conclusion" (click) = "next(1)"  [ngStyle]="currentTab === 5 && {'display':'block'} || currentTab !== 5 && {'display':'none'}" style = 'background:red'>Concluir</button>
+                    <button type="button"  class = 'bt btn btn-sm btn-success' id="conclusion" (click) = "next(1)"  [ngStyle]="currentTab === 5 && {'display':'block'} || currentTab !== 5 && {'display':'none'}" >Concluir</button>
                 </div>
                 <div class="alert alert-success" [ngStyle]="currentTab === 6 && {'display':'block'} || currentTab !== 6 && {'display':'none'}" style = 'color:green'><b>Concluído com sucesso</b>, clique no <b>botão abaixo para inserir uma nova pergunta</b></div>
 
-                <button class  = 'bt' type = 'button' (click) = 'novaPergunta()' [ngStyle]="currentTab === 6 && {'display':'block'} || currentTab !== 6 && {'display':'none'}" style = 'width:100%'>Inserir nova pergunta</button>
+                <button class = 'bt btn btn-sm btn-info' type = 'button' (click) = 'novaPergunta()' [ngStyle]="currentTab === 6 && {'display':'block'} || currentTab !== 6 && {'display':'none'}" style = 'width:100%'>Inserir nova pergunta</button>
 
             </div>
 
