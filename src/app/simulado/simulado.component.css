@@ -1,60 +1,52 @@
 * {
     box-sizing: border-box;
-  }
-  
-  body {
+}
+
+body {
     background-color: #f1f1f1;
-  }
-  
-  .reg {
-    background-color: #ffffff;
-    margin: 100px auto;
-    font-family: Raleway;
-    padding: 40px;
-    width: 70%;
+    font-family: 'Open Sans', sans-serif;
+}
+label{
+    margin-bottom: .1rem;
+}
+table{
+    border: 1px solid #e4e7ea;
+}
+.reg {
+    background-color: #fbfbfb;
+    margin: 20px 0;
+    font-family: 'Open Sans', sans-serif;
+    padding: 20px 40px;
     min-width: 300px;
-    border: solid 5px #e2e2e2
-  }
-  
-  h1 {
-    text-align: center;  
-  }
-  
-  input {
+    border: 2px solid #efefef;
+}
+
+h1 {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+input {
     padding: 10px;
     width: 100%;
     font-size: 17px;
     font-family: Raleway;
-    
-  }
 
-  
-  /* Mark input boxes that gets an error on validation: */
+}
 
-  
-  .bt {
-    background-color: #4CAF50;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 17px;
-    font-family: Raleway;
-    cursor: pointer;
-    text-align:center
-  }
-
-  
-  button:hover {
+button:hover {
     opacity: 0.8;
-  }
-  
-  #prevBtn {
-    background-color: #bbbbbb;
-  }
+}
 
-  
-  /* Make circles that indicate the steps of the form: */
-  .step {
+#prevBtn {
+    background-color: #bbbbbb;
+}
+
+
+/* Make circles that indicate the steps of the form: */
+.step {
     height: 15px;
     width: 15px;
     margin: 0 2px;
@@ -63,49 +55,43 @@
     border-radius: 50%;
     display: inline-block;
     opacity: 0.5;
-  }
+}
 
-  .active{
+.active{
     opacity: 1;
-  }
-  .finish {
+}
+.finish {
     background-color: #4CAF50;
-  }
+}
 
 #select{
-  margin-left:40px;
-  margin-top:20px;
-  font-size:18px;
-  color: black;
-  font-family: Raleway;
+    margin-top:10px;
+    font-size:14px;
+    color: black;
+    font-family: 'Open Sans', sans-serif;
 }
 
-#simulado{
-  box-shadow: 10px 10px 10px 10px #888888
-}
 select{
 
     width: 250px; /* Tamanho do select, maior que o tamanho da div "div-select" */
     height:30px; /* Altura do select, importante para que tenha a mesma altura em todo os navegadores */
     border:1px solid #ddd;
- 
+
 }
 .nav.nav-tabs.justify-content-start{
-  margin-bottom:15px
+    margin-bottom:15px
 }
 
 
 /* Aparência que terá o seletor de arquivo */
 input[type='file'] {
-  display: none
+    display: none
 }
 
-/* Aparência que terá o seletor de arquivo */
-#labelFile {
-  background-color: red!important;
-  border-radius: 5px;
-  color: #fff;
-  cursor: pointer;
-  margin: 10px;
-  padding: 6px 20px
+.modal-content .nav-link{
+    padding: 0.1rem 0.7rem;
+    border-radius: 1px;
+}
+.modal-content .updateBorder{
+    margin-top: 20px;
 }

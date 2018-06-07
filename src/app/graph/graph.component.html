@@ -1,90 +1,97 @@
 <div class = 'row' id = 'filtros'>
-  <div class = 'col-md-2' >
-      <label class = 'label'>Caderno:</label>
-      <select [(ngModel)] = 'tipoCaderno' (change) = 'changeTipoCaderno()' class = 'select'>
-        <option value="simulado">Simulado</option>
-        <option value="prova">Prova</option>
-      </select>
-    </div>  
-  <div class = 'col-md-2'>
-      <label class = 'label'>Ano:</label>
-      <select [(ngModel)] = 'year' (change) = 'changeYear()' class = 'select'>
-          <option value="{{item}}" *ngFor = 'let item of itemYear'>{{item}}</option>
-          
-       </select>
-  </div> 
-  <div class = 'col-md-2' id = 'buttonConsultar'>
-    <button class="btn btn-success" (click) = 'consultar()'>Consultar</button>
-</div> 
-</div>
+    <div class="container">
+        <div class="row">
+            <div class = 'col-md-2' >
+                <label class = 'label'>Caderno:</label>
+                <select [(ngModel)] = 'tipoCaderno' (change) = 'changeTipoCaderno()' class = 'select'>
+                    <option value="simulado">Simulado</option>
+                    <option value="prova">Prova</option>
+                </select>
+            </div>  
+            <div class = 'col-md-2'>
+                <label class = 'label'>Ano:</label>
+                <select [(ngModel)] = 'year' (change) = 'changeYear()' class = 'select'>
+                    <option value="{{item}}" *ngFor = 'let item of itemYear'>{{item}}</option>
 
-<div class = 'chart' *ngIf = 'showChart'>
-<kendo-chart (seriesClick) = 'clickChart($event,content)' >
-  <kendo-chart-title text="Total perguntas de {{tipoCaderno}} do ano de {{year}}"></kendo-chart-title>
-  <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
-  <kendo-chart-tooltip></kendo-chart-tooltip>
-  <kendo-chart-series>
-    <kendo-chart-series-item *ngFor= "let x of series"   [data] = 'x.valor' [name]='x.nome'>
-      </kendo-chart-series-item>
-      
-  </kendo-chart-series>
-</kendo-chart>
+                </select>
+            </div> 
+            <div class = 'col-md-2' id = 'buttonConsultar'>
+                <button class="btn btn-success btn-sm" (click) = 'consultar()'>Consultar</button>
+            </div> 
+        </div>
+    </div> 
 </div>
+<div class="container">
+    <div class="col-md-12">
+        <div class = 'chart' *ngIf = 'showChart'>
+            <kendo-chart (seriesClick) = 'clickChart($event,content)' >
+                <kendo-chart-title text="Total perguntas de {{tipoCaderno}} do ano de {{year}}"></kendo-chart-title>
+                <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
+                <kendo-chart-tooltip></kendo-chart-tooltip>
+                <kendo-chart-series>
+                    <kendo-chart-series-item *ngFor= "let x of series"   [data] = 'x.valor' [name]='x.nome'>
+                </kendo-chart-series-item>
 
-<div class = 'chart' *ngIf = 'showChart'>
-<kendo-chart [categoryAxis]="{categories:yearTotalSelectSort}" >
-  <kendo-chart-title text="Simulado X Prova"></kendo-chart-title>
-  <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
-  <kendo-chart-tooltip></kendo-chart-tooltip>
-  <kendo-chart-series>
-    <kendo-chart-series-item *ngFor= "let x of seriesLine" type="line" [data] = 'x.valor' [name]='x.nome'>
-      </kendo-chart-series-item>
-  </kendo-chart-series>
-</kendo-chart>
+            </kendo-chart-series>
+        </kendo-chart>
+    </div>
 </div>
-
+<div class="col-md-12">
+    <div class = 'chart' *ngIf = 'showChart'>
+        <kendo-chart [categoryAxis]="{categories:yearTotalSelectSort}" >
+            <kendo-chart-title text="Simulado X Prova"></kendo-chart-title>
+            <kendo-chart-legend position='bottom' orientation='horizontal'></kendo-chart-legend>
+            <kendo-chart-tooltip></kendo-chart-tooltip>
+            <kendo-chart-series>
+                <kendo-chart-series-item *ngFor= "let x of seriesLine" type="line" [data] = 'x.valor' [name]='x.nome'>
+            </kendo-chart-series-item>
+        </kendo-chart-series>
+    </kendo-chart>
+</div>
+</div>
+</div>
 
 <ng-template #content let-c="close" let-d="dismiss">
-        
-            
-  <div class="modal-header">
-    <h4 class="modal-title">{{nameDisciplinaModal}}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">  
-
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th>Pergunta</th>
-          <th>Resposta A</th>
-          <th>Resposta B</th>
-          <th>Resposta C</th>
-          <th>Resposta D</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor = 'let x of perguntasModal | async'>
-          <td>{{x.pergunta}}</td>          
-          <td>{{x.respostas.resposta1}}</td>          
-          <td>{{x.respostas.resposta2}}</td>     
-          <td>{{x.respostas.resposta3}}</td>     
-          <td>{{x.respostas.resposta4}}</td>     
-        </tr>       
-      </tbody>
-    </table>
-  
 
 
+    <div class="modal-header">
+        <h4 class="modal-title">{{nameDisciplinaModal}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">  
 
-   
- 
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Pergunta</th>
+                    <th>Resposta A</th>
+                    <th>Resposta B</th>
+                    <th>Resposta C</th>
+                    <th>Resposta D</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor = 'let x of perguntasModal | async'>
+                    <td>{{x.pergunta}}</td>          
+                    <td>{{x.respostas.resposta1}}</td>          
+                    <td>{{x.respostas.resposta2}}</td>     
+                    <td>{{x.respostas.resposta3}}</td>     
+                    <td>{{x.respostas.resposta4}}</td>     
+                </tr>       
+            </tbody>
+        </table>
 
-  </div>
-  <div class="modal-footer">         
-    <button type="button" class="btn btn-success btn-sm" (click)="c('Close click')">Fechar</button>
-  </div>
-  
+
+
+
+
+
+
+    </div>
+    <div class="modal-footer">         
+        <button type="button" class="btn btn-success btn-sm" (click)="c('Close click')">Fechar</button>
+    </div>
+
 </ng-template>
