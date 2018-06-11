@@ -9,8 +9,11 @@ export class AuthService {
   constructor(private fire: AngularFireAuth,private router:Router) { }
 
   signInUser(email:string,senha:string) {
-    this.fire.auth.signInWithEmailAndPassword(email, senha).then((user) => {        
-      this.authState = user;
+
+    this.fire.auth.signInWithEmailAndPassword(email, senha).then((user) => {
+      console.log(user.uid);
+      localStorage.setItem('uid',user.uid);      
+      //this.authState = user;
       this.router.navigate(['simulado']);
     }) .catch(error => {
       console.log('got an error',error);
@@ -20,6 +23,6 @@ export class AuthService {
 }
 
 authUser(): boolean {
-  return this.authState !== null && this.authState !== undefined ? true : false;
+  return localStorage.getItem('uid') !== null && localStorage.getItem('uid') !== undefined ? true : false;
 }
 }

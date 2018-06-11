@@ -9,6 +9,8 @@ import { GraphComponent } from './graph/graph.component';
 
 // canActivate:[AuthGuardService]
 
+
+
 const APP_ROUTES: Routes = [
     {path: '', component: LoginComponent},
     {path: 'cadastro', component: RegistroComponent},

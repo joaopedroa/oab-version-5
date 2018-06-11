@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import swal from 'sweetalert2'
 import * as firebase from 'firebase/app';
 import { AuthService } from '../guards/auth.service';
-
+import { AuthGuardService } from '../guards/auth-guard.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,12 +21,15 @@ export class LoginComponent implements OnInit {
 
 
   constructor(private fire: AngularFireAuth,private router:Router,public server:AuthService) {
-    this.fire.auth.signOut();
+    
+    
+     
+   
     
    }
   
   ngOnInit() {
-
+    
  
   }
 /*

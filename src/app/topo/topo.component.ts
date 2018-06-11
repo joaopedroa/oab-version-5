@@ -5,7 +5,7 @@ import {Router} from '@angular/router'
 import * as firebase from 'firebase/app';
 import { AuthService } from '../guards/auth.service';
 import { Observable } from 'rxjs/Observable';
-
+import { AuthGuardService } from '../guards/auth-guard.service';
 
 
 
@@ -17,21 +17,18 @@ import { Observable } from 'rxjs/Observable';
 export class TopoComponent implements OnInit {
   
   user:Observable<firebase.User>;
-  authenticated:boolean = false;
-  
-  constructor(public fire:AngularFireAuth,public router:Router,public server:AuthService) {    
+  authenticated:boolean;
+
+  constructor(public fire:AngularFireAuth,public router:Router,public server:AuthGuardService) {
     this.fire.authState.subscribe((auth) =>{
-        if(auth !== null){
-          this.user = fire.authState;
-          this.authenticated = true;
-        }else{
-          this.authenticated = false; 
-        }
-    })
-
-
-
-  
+      if(auth !== null){
+        this.user = fire.authState;
+        this.authenticated = true;
+        this.router.navigate(['simulado']);
+      }else{
+        this.authenticated = false; 
+      }
+})
   }
 
   ngOnInit(){
@@ -43,6 +40,7 @@ export class TopoComponent implements OnInit {
  
     logOut(){
       this.fire.auth.signOut();
+      localStorage.removeItem('uid');
       this.router.navigate([""]);
       //this.authenticated = false;
     }
