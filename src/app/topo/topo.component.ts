@@ -24,7 +24,7 @@ export class TopoComponent implements OnInit {
       if(auth !== null){
         this.user = fire.authState;
         this.authenticated = true;
-        this.router.navigate(['simulado']);
+        
       }else{
         this.authenticated = false; 
       }

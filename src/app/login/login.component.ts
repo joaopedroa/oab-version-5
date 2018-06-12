@@ -7,6 +7,7 @@ import swal from 'sweetalert2'
 import * as firebase from 'firebase/app';
 import { AuthService } from '../guards/auth.service';
 import { AuthGuardService } from '../guards/auth-guard.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
     email:any;
     senha:any;
    autent:any;
-
+ 
 
   constructor(private fire: AngularFireAuth,private router:Router,public server:AuthService) {
     
@@ -29,8 +30,8 @@ export class LoginComponent implements OnInit {
    }
   
   ngOnInit() {
-    
- 
+    if (localStorage.getItem('uid') !== null && localStorage.getItem('uid') !== undefined)
+          this.router.navigate(['simulado']);
   }
 /*
   signInUser() {
@@ -43,6 +44,8 @@ export class LoginComponent implements OnInit {
   }
   */
  signInUser(){
+    
     this.server.signInUser(this.email,this.senha);
+ 
  }
 }

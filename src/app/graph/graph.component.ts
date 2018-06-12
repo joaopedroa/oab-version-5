@@ -172,7 +172,7 @@ this.graficoLegendLineSimulado.forEach(item =>{
   this.seriesLine.push(my_obj);
  
 });
-console.log('se', this.seriesLine)
+//console.log('se', this.seriesLine)
 
 }
 

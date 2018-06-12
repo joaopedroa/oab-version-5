@@ -177,8 +177,9 @@ private getDismissReason(reason: any): string {
       text: "Você não poderá reverter isso!!",
       type: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: 'gray',
+      cancelButtonText:'Cancelar',
       confirmButtonText: 'Sim, excluir!'
     }).then((result) => {
       if (result.value) {
