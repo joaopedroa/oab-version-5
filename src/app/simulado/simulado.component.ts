@@ -4,7 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {AngularFireAuth} from 'angularfire2/auth';
 import { XlsxToJsonServiceService } from '../guards/xlsx-to-json-service.service';
-import swal from 'sweetalert2'
+import swal from 'sweetalert2';
+import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-simulado',
   templateUrl: './simulado.component.html',
@@ -53,6 +54,7 @@ export class SimuladoComponent implements OnInit {
   respostaCorretaEditar:string;
   respostaCorretaBackground:string;
   user:string;
+  numeroQuestao:number;
   @ViewChild('valuePath') valuePath; 
    
   constructor(public database:AngularFireDatabase,private modalService: NgbModal, public fire:AngularFireAuth) {
@@ -233,27 +235,75 @@ next(number:number){
       this.justificativaresposta4 = null;
     }
     
-    this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).push({
-          pergunta: this.pergunta, 
-          ano: this.valueYear,
-          criadaPor: this.user,
-          ModificadaPor: this.user,
-          respostaCorreta: this.respostaCorreta,
-          respostas: {
-                    resposta1: "a)" + this.resposta1,
-                    resposta2: "b)" +  this.resposta2,
-                    resposta3: "c)" + this.resposta3,
-                    resposta4: "d)" + this.resposta4
-                  },
-           justificativas: {
-                    justificativaresposta1: this.justificativaresposta1,
-                    justificativaresposta2: this.justificativaresposta2,
-                    justificativaresposta3: this.justificativaresposta3,
-                    justificativaresposta4: this.justificativaresposta4
-                  }
-         
+    
+    let dados = { 
+      "pergunta": this.pergunta, 
+      "resposta_correta": this.respostaCorreta,
+      "respostas": {
+        "a": {
+          "descricao": this.resposta1,
+          "justificativa": this.justificativaresposta1
+        } ,
+        "b": {
+          "descricao": this.resposta2,
+          "justificativa": this.justificativaresposta2
+        } ,
+        "c": {
+          "descricao": this.resposta3,
+          "justificativa": this.justificativaresposta3
+        } ,
+        "d": {
+          "descricao": this.resposta4,
+          "justificativa": this.justificativaresposta4
+        } ,
+      },
+   };
+   console.log(this.numeroQuestao);
+/*
+   let ano = this.database.list('simulados/').snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+  }).take(1).forEach(v => {
+    v.filter(i => i.ano == this.valueYear);
+    if(v[0].ano == this.valueYear){
+      this.database.list('simulados/' + this.valueYear + '/question/' + this.disciplina).snapshotChanges().map(arr => {
+        return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+      }).take(1).forEach(v => {
+        if(v.length === null || v.length === undefined){
+         this.numeroQuestao = 1;
+         this.database.object('simulados/' + this.valueYear + '/question/' + this.disciplina +'/'+ this.numeroQuestao).set(
+           dados
+         )
+       }else{
+         this.numeroQuestao = v.length + 1;
+         this.database.object('simulados/' + this.valueYear + '/question/' + this.disciplina +'/'+ this.numeroQuestao).set(
+           dados
+         )
+       }
+   
+       })
+    }
+  });
 
-      })
+*/
+   let pergunta;
+   pergunta = this.database.list('simulados/' + this.valueYear + '/question/' + this.disciplina).snapshotChanges().map(arr => {
+     return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+   }).take(1).forEach(v => {
+     if(v.length === null || v.length === undefined){
+      this.numeroQuestao = 1;
+      this.database.object('simulados/' + this.valueYear + '/question/' + this.disciplina +'/'+ this.numeroQuestao).set(
+        dados
+      )
+    }else{
+      this.numeroQuestao = v.length + 1;
+      this.database.object('simulados/' + this.valueYear + '/question/' + this.disciplina +'/'+ this.numeroQuestao).set(
+        dados
+      )
+    }
+
+    });
+
+   
   }else if (number === -1 &&  this.currentTab > 0 ){
     this.currentTab = this.currentTab + number;
   }
