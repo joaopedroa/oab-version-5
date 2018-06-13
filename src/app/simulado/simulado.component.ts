@@ -32,7 +32,8 @@ export class SimuladoComponent implements OnInit {
   justificativaresposta4:string = null;
   active = 'active';
   finish = 'finish';
-  perguntas : Observable<any[]>;
+  perguntas :any = [];
+  todasPerguntas : Observable<any[]>;
   dataYear:any = new Date().getFullYear();
   year:any = [];
   valueYear:number = this.dataYear;
@@ -64,9 +65,15 @@ export class SimuladoComponent implements OnInit {
     this.disciplinas = ['Ética','Filosofia','Constitucional','Direito Humanos','Internacional','Tributário','Administrativo','Ambiental','Civil','ECA','CDC','Empresarial','Processo Civil','Penal','Processo Penal','Direito do Trabalho','Processo do Trabalho']
     this.disciplina = this.disciplinas[0];
     // LISTA AS PERGUNTAS DO FIREBASE
-    this.perguntas = this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).snapshotChanges().map(arr => {
-      return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+    this.todasPerguntas = this.database.list('simulados/').snapshotChanges().map(arr => {
+      return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear)
     });
+
+    this.todasPerguntas.take(1).forEach(v => {
+      this.perguntas=v[0].questions[this.disciplina];
+      console.log(this.perguntas);
+    });
+    
 
     // FOR PARA DADOS DO SELECT YEAR
     for(let x=0;x<20;x++)

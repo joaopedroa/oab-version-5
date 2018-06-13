@@ -117,15 +117,15 @@
                     <tr>
                         <th>Pergunta</th>
                         <th>Usuário</th>
-                        <th>Ano</th>
+
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor = 'let item of perguntas |  async' >
+                    <tr *ngFor = 'let item of perguntas' >
                         <td>{{item.pergunta}}</td>
-                        <td>{{item.ModificadaPor}}</td>
-                        <td>{{item.ano}}</td>
+                        <td>{{item.resposta_correta}}</td>
+                       
                         <td> 
                             <button type="button" class="btn btn-info btn-sm"  (click)="open(content, item)">Editar</button>
                             <button type="button" class="btn btn-danger btn-sm" (click) = 'delete(item.$key)'>Excluir</button>
