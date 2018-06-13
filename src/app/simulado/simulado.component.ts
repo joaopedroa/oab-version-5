@@ -78,6 +78,14 @@ export class SimuladoComponent implements OnInit {
 }
 ngOnInit() {
  
+  //Teste
+
+  this.database.list('simulados/').snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+  }).forEach(v => {
+  });
+
+
   
 }
 
@@ -86,8 +94,6 @@ handleFile(event) {
   let file = event.target.files[0];
   this.xlsxToJsonService.processFileToJson({}, file).subscribe(data => {
     this.results = JSON.stringify(data['sheets']['Planilha1']);
-    console.log(this.result);
-    console.log(JSON.parse(this.results));
     this.result = JSON.parse(this.results);
   })
 
@@ -147,7 +153,6 @@ private getDismissReason(reason: any): string {
       this.justificativaresposta4Editar = null;
     }
   
-   console.log(this.fire.auth.currentUser.email);
     this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).update(this.keyEditar,{
 
 
@@ -215,7 +220,6 @@ next(number:number){
   }
   else if(this.resposta4 !== undefined && this.currentTab === 4 && this.resposta4 !== ""  &&  this.justificativaresposta4 !== undefined  && this.justificativaresposta4 !== "" && this.justificativaresposta4 !== null){
     this.currentTab = this.currentTab + number;
-    console.log(this.currentTab)
   }
   else if(this.respostaCorreta !== undefined && this.respostaCorreta !== null && this.respostaCorreta !== "" && this.currentTab === 5){
     this.currentTab = this.currentTab + number;
@@ -235,30 +239,67 @@ next(number:number){
       this.justificativaresposta4 = null;
     }
     
-    
-    let dados = { 
-      "pergunta": this.pergunta, 
-      "resposta_correta": this.respostaCorreta,
-      "respostas": {
-        "a": {
-          "descricao": this.resposta1,
-          "justificativa": this.justificativaresposta1
-        } ,
-        "b": {
-          "descricao": this.resposta2,
-          "justificativa": this.justificativaresposta2
-        } ,
-        "c": {
-          "descricao": this.resposta3,
-          "justificativa": this.justificativaresposta3
-        } ,
-        "d": {
-          "descricao": this.resposta4,
-          "justificativa": this.justificativaresposta4
-        } ,
-      },
-   };
-   console.log(this.numeroQuestao);
+    /*
+    let dados = "{" +
+      "'ano':" + this.valueYear + ',' +
+      "'questions':{" +
+        "'"+this.disciplina + "'" + ":{" +
+        "'"+this.numeroQuestao+"'" + ":{" +
+            "'pergunta':" +this.pergunta + "," + 
+            "'resposta_correta':" + this.respostaCorreta + "," +
+            "'respostas': {" + 
+              "'a': {" + 
+                "'descricao':" + this.resposta1 + ',' +
+                "'justificativa':" +  this.justificativaresposta1 + 
+              "} ," +
+              "'b':" +  "{"+
+                "'descricao':" + this.resposta2 + ',' + 
+                "'justificativa':" +  this.justificativaresposta2 + 
+              "} ," +
+              "'c':" + "{" +
+                "'descricao':" + this.resposta3 + ',' +
+                "'justificativa':" + this.justificativaresposta3 + 
+              "} ," +
+              "'d':{" + 
+                "'descricao':" + this.resposta4 + ',' +
+                "'justificativa':" +  this.justificativaresposta4  +
+              "} "+
+            "}" +
+          "}"+
+        "}"+
+      "}"+
+    "}";
+    */
+
+    let dados = {  
+      "ano": this.valueYear,
+      "questions":{  
+         [`${this.disciplina}`]:{  
+            [`${this.numeroQuestao}`]:{  
+               "pergunta":this.pergunta,
+               "resposta_correta":this.respostaCorreta,
+               "respostas":{  
+                  "a":{  
+                     "descricao":this.resposta1,
+                     "justificativa":this.justificativaresposta1
+                  },
+                  "b":{  
+                     "descricao":this.resposta2,
+                     "justificativa":this.justificativaresposta2
+                  },
+                  "c":{  
+                     "descricao":this.resposta3,
+                     "justificativa":this.justificativaresposta3
+                  },
+                  "d":{  
+                     "descricao":this.resposta4,
+                     "justificativa":this.justificativaresposta4
+                  }
+               }
+            }
+         }
+      }
+   }
 /*
    let ano = this.database.list('simulados/').snapshotChanges().map(arr => {
     return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
@@ -285,30 +326,63 @@ next(number:number){
   });
 
 */
+  let chaveAno =  this.database.list('simulados/',ref => ref.orderByChild('ano').equalTo(this.valueYear)).snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+  }).take(1).forEach(item =>{
+    let questions = []; 
+    if(item.length > 0){
+      if(item[0].questions.hasOwnProperty(this.disciplina)){
+        questions = item[0].questions[this.disciplina];
+      }
+      let all = questions.length;
+      questions[all] = this.retornaJSON();  
+      this.database.object('simulados/'+item[0].$key + '/questions/' + this.disciplina).set(questions);
+    } else {
+      let novo = {
+        ano: this.valueYear,
+        questions: {
+          [`${this.disciplina}`]: [
+            this.retornaJSON()
+          ]
+        }
+      }
+      this.database.list('simulados/').push(novo);
+    }
+  });
+  
+
+
+
+
+/*
    let pergunta;
-   pergunta = this.database.list('simulados/' + this.valueYear + '/question/' + this.disciplina).snapshotChanges().map(arr => {
+   pergunta = this.database.list('simulados/').snapshotChanges().map(arr => {
      return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
    }).take(1).forEach(v => {
      if(v.length === null || v.length === undefined){
       this.numeroQuestao = 1;
-      this.database.object('simulados/' + this.valueYear + '/question/' + this.disciplina +'/'+ this.numeroQuestao).set(
-        dados
-      )
+      this.database.list('simulados/').push(
+        
+        this.retornaJSON(this.numeroQuestao)
+      );
+      console.log(dados);
     }else{
       this.numeroQuestao = v.length + 1;
-      this.database.object('simulados/' + this.valueYear + '/question/' + this.disciplina +'/'+ this.numeroQuestao).set(
-        dados
-      )
+      this.database.list('simulados/' ).push(
+        this.retornaJSON(this.numeroQuestao)
+      );
+      console.log(dados);
     }
 
     });
 
-   
+   */
   }else if (number === -1 &&  this.currentTab > 0 ){
     this.currentTab = this.currentTab + number;
   }
 
 }
+
   // INSERIR NOVA PERGUNTA
   novaPergunta(){
     this.currentTab = 0;
@@ -322,6 +396,32 @@ next(number:number){
     this.justificativaresposta3 = undefined
     this.justificativaresposta4 = undefined
     this.respostaCorreta = undefined
+  }
+
+  retornaJSON(){
+    let dados = {  
+               "pergunta":this.pergunta,
+               "resposta_correta":this.respostaCorreta,
+               "respostas":{  
+                  "a":{  
+                     "descricao":this.resposta1,
+                     "justificativa":this.justificativaresposta1
+                  },
+                  "b":{  
+                     "descricao":this.resposta2,
+                     "justificativa":this.justificativaresposta2
+                  },
+                  "c":{  
+                     "descricao":this.resposta3,
+                     "justificativa":this.justificativaresposta3
+                  },
+                  "d":{  
+                     "descricao":this.resposta4,
+                     "justificativa":this.justificativaresposta4
+                  }
+               }
+            }
+   return dados;
   }
 
   enviarPerguntaUpload(){
