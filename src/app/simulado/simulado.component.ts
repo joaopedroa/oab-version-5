@@ -32,7 +32,7 @@ export class SimuladoComponent implements OnInit {
   justificativaresposta4:string = null;
   active = 'active';
   finish = 'finish';
-  perguntas :any = [];
+  perguntas :Observable<any[]>;
   todasPerguntas : Observable<any[]>;
   dataYear:any = new Date().getFullYear();
   year:any = [];
@@ -65,15 +65,21 @@ export class SimuladoComponent implements OnInit {
     this.disciplinas = ['Ética','Filosofia','Constitucional','Direito Humanos','Internacional','Tributário','Administrativo','Ambiental','Civil','ECA','CDC','Empresarial','Processo Civil','Penal','Processo Penal','Direito do Trabalho','Processo do Trabalho']
     this.disciplina = this.disciplinas[0];
     // LISTA AS PERGUNTAS DO FIREBASE
-    this.todasPerguntas = this.database.list('simulados/').snapshotChanges().map(arr => {
-      return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear)
+    this.perguntas = this.database.list('simulados/').snapshotChanges().map(arr => {
+      let disc =  arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear).map(i => i.questions[this.disciplina]);      
+      let discCompleto = [];
+      disc[0].forEach(function(element, index, array){
+        let eachValue = element;
+        eachValue['key'] = index;
+        discCompleto.push(eachValue);
+        //console.log(element);
+      })
+      //console.log(disc[0]);
+      
+      return discCompleto;
     });
 
-    this.todasPerguntas.take(1).forEach(v => {
-      this.perguntas=v[0].questions[this.disciplina];
-      console.log(this.perguntas);
-    });
-    
+
 
     // FOR PARA DADOS DO SELECT YEAR
     for(let x=0;x<20;x++)
@@ -184,8 +190,12 @@ private getDismissReason(reason: any): string {
   }
 
   delete(key:string){
- 
-
+   console.log(key);
+   let chaveAno =  this.database.list('simulados/',ref => ref.orderByChild('ano').equalTo(this.valueYear)).snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+  }).take(1).forEach(item => {
+    item
+  });
     swal({
       title: 'Tem certeza que deseja excluir essa pergunta?',
       text: "Você não poderá reverter isso!!",
@@ -194,10 +204,17 @@ private getDismissReason(reason: any): string {
       confirmButtonColor: '#d33',
       cancelButtonColor: 'gray',
       cancelButtonText:'Cancelar',
-      confirmButtonText: 'Sim, excluir!'
+      confirmButtonText: 'Sim, excluir!',
+      reverseButtons: true
     }).then((result) => {
       if (result.value) {
-        this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).remove(key);
+
+       
+          
+       //   this.database.list('simulados/' + item[0].$key + '/questions/' + this.disciplina).remove(key);
+
+        
+        
         swal(
           'Excluído!',
           'A pergunta foi deletada com sucesso!.',

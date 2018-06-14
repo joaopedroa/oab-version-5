@@ -79,10 +79,10 @@
                         <span>Selecione a resposta Correta:</span>
                         <br>
                         <select [(ngModel)] = 'respostaCorreta'  class = 'selectpicker'>
-                            <option value="resposta1" >a)</option>
-                            <option value="resposta2" >b)</option>
-                            <option value="resposta3" >c)</option>
-                            <option value="resposta4" >d)</option>
+                            <option value="a" >a)</option>
+                            <option value="b" >b)</option>
+                            <option value="c" >c)</option>
+                            <option value="d" >d)</option>
                         </select>
                     </p>
 
@@ -116,19 +116,17 @@
                 <thead>
                     <tr>
                         <th>Pergunta</th>
-                        <th>Usuário</th>
-
+                        <th>Resposta Correta</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor = 'let item of perguntas' >
+                    <tr *ngFor = 'let item of perguntas | async' >
                         <td>{{item.pergunta}}</td>
-                        <td>{{item.resposta_correta}}</td>
-                       
+                        <td>{{item.resposta_correta}}</td>                      
                         <td> 
                             <button type="button" class="btn btn-info btn-sm"  (click)="open(content, item)">Editar</button>
-                            <button type="button" class="btn btn-danger btn-sm" (click) = 'delete(item.$key)'>Excluir</button>
+                            <button type="button" class="btn btn-danger btn-sm" (click) = 'delete(item.key)'>Excluir</button>
                     </td>
                 </tr>      
             </tbody>
