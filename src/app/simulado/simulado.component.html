@@ -126,7 +126,7 @@
                         <td>{{item.resposta_correta}}</td>                      
                         <td> 
                             <button type="button" class="btn btn-info btn-sm"  (click)="open(content, item)">Editar</button>
-                            <button type="button" class="btn btn-danger btn-sm" (click) = 'delete(item.key)'>Excluir</button>
+                            <button type="button" class="btn btn-danger btn-sm" (click) = 'delete(item.$key)'>Excluir</button>
                     </td>
                 </tr>      
             </tbody>

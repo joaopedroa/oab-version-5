@@ -56,6 +56,8 @@ export class SimuladoComponent implements OnInit {
   respostaCorretaBackground:string;
   user:string;
   numeroQuestao:number;
+  chaveAno:string;
+  aux:Observable<any[]>;
   @ViewChild('valuePath') valuePath; 
    
   constructor(public database:AngularFireDatabase,private modalService: NgbModal, public fire:AngularFireAuth) {
@@ -65,6 +67,7 @@ export class SimuladoComponent implements OnInit {
     this.disciplinas = ['Ética','Filosofia','Constitucional','Direito Humanos','Internacional','Tributário','Administrativo','Ambiental','Civil','ECA','CDC','Empresarial','Processo Civil','Penal','Processo Penal','Direito do Trabalho','Processo do Trabalho']
     this.disciplina = this.disciplinas[0];
     // LISTA AS PERGUNTAS DO FIREBASE
+   /* LISTA DE PERGUNTAS
     this.perguntas = this.database.list('simulados/').snapshotChanges().map(arr => {
       let disc =  arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear).map(i => i.questions[this.disciplina]);      
       let discCompleto = [];
@@ -78,7 +81,31 @@ export class SimuladoComponent implements OnInit {
       
       return discCompleto;
     });
+  */
+ 
+  this.aux = this.database.list('simulados/').snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear)
+  });
+  this.aux.take(1).forEach(item => {
+    console.log('item', item);
+    this.chaveAno = item[0].$key;
+    this.getChaveAno(item[0]).then((chaveAno) => {
+      if(chaveAno != undefined){
+        this.perguntas = this.database.list(`simulados/${chaveAno}/questions/${this.disciplina}`).snapshotChanges().map(arr => {
+          return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+        });
+      }
+      this.perguntas.forEach(item =>{
+        console.log(item);
+      });
+    });
+    
+    
+  
+  });
+  //lista perguntas
 
+  //
 
 
     // FOR PARA DADOS DO SELECT YEAR
@@ -89,14 +116,16 @@ export class SimuladoComponent implements OnInit {
     }
     
 }
-ngOnInit() {
- 
-  //Teste
 
-  this.database.list('simulados/').snapshotChanges().map(arr => {
-    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
-  }).forEach(v => {
-  });
+getChaveAno(chave){
+  return new Promise(resolve => {
+    this.chaveAno = chave.$key;
+    resolve(this.chaveAno);
+  })
+}
+
+ngOnInit() {
+
 
 
   
@@ -113,9 +142,30 @@ handleFile(event) {
 
 }
 selectAno(){
+  /*
   this.perguntas = this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).snapshotChanges().map(arr => {
     return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
   });
+  */
+
+  this.aux = this.database.list('simulados/').snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear)
+  });
+  this.aux.take(1).forEach(item => {
+    console.log('item', item);
+    this.chaveAno = item[0].$key;
+    this.getChaveAno(item[0]).then((chaveAno) => {
+      if(chaveAno != undefined){
+        this.perguntas = this.database.list(`simulados/${chaveAno}/questions/${this.disciplina}`).snapshotChanges().map(arr => {
+          return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+        });
+      }
+      this.perguntas.forEach(item =>{
+        console.log(item);
+      });
+    });
+  });
+  
 }
 open(content, item) {
 
@@ -124,18 +174,19 @@ open(content, item) {
   }, (reason) => {
     this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
   });
-  this.respostaCorretaBackground = item.respostaCorreta;
+  console.log("item:", item);
+  this.respostaCorretaBackground = item.resposta_correta;
   this.perguntaEditar = item.pergunta;
-  this.resposta1Editar = item.respostas.resposta1
-  this.resposta2Editar = item.respostas.resposta2
-  this.resposta3Editar = item.respostas.resposta3
-  this.resposta4Editar = item.respostas.resposta4
-  this.respostaCorretaEditar = item.respostaCorreta
+  this.resposta1Editar = item.respostas.a.descricao
+  this.resposta2Editar = item.respostas.b.descricao
+  this.resposta3Editar = item.respostas.c.descricao
+  this.resposta4Editar = item.respostas.d.descricao
+  this.respostaCorretaEditar = item.resposta_correta
   if(item.justificativas !== undefined){
-  this.justificativaresposta1Editar = item.justificativas.justificativaresposta1 
-  this.justificativaresposta2Editar = item.justificativas.justificativaresposta2 
-  this.justificativaresposta3Editar = item.justificativas.justificativaresposta3 
-  this.justificativaresposta4Editar = item.justificativas.justificativaresposta4 
+  this.justificativaresposta1Editar = item.respostas.a.justificativa 
+  this.justificativaresposta2Editar = item.respostas.b.justificativa 
+  this.justificativaresposta3Editar = item.respostas.c.justificativa 
+  this.justificativaresposta4Editar = item.respostas.d.justificativa 
 }
   this.keyEditar = item.$key;
   
@@ -165,27 +216,40 @@ private getDismissReason(reason: any): string {
     if(this.justificativaresposta4Editar === undefined || this.justificativaresposta4Editar === ""){
       this.justificativaresposta4Editar = null;
     }
-  
-    this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).update(this.keyEditar,{
 
-
-      pergunta: this.perguntaEditar, 
-      respostas: {        
-        resposta1: this.resposta1Editar,
-        resposta2: this.resposta2Editar,
-        resposta3: this.resposta3Editar,
-        resposta4: this.resposta4Editar
+    var updates = {};
+    updates[`pergunta`] = this.perguntaEditar;
+    updates[`resposta_correta`] = this.respostaCorretaEditar;
+    updates[`respostas`] = {
+      'a': {
+        'descricao': this.resposta1Editar,
+        'justificativa': this.justificativaresposta1Editar
       },
-      respostaCorreta: this.respostaCorretaEditar,
-      ModificadaPor: this.user,
-      justificativas:{
-        justificativaresposta1: this.justificativaresposta1Editar,
-        justificativaresposta2: this.justificativaresposta2Editar,
-        justificativaresposta3: this.justificativaresposta3Editar,
-        justificativaresposta4: this.justificativaresposta4Editar
+      'b': {
+        'descricao': this.resposta2Editar,
+        'justificativa': this.justificativaresposta2Editar
+      },
+      'c': {
+        'descricao': this.resposta3Editar,
+        'justificativa': this.justificativaresposta3Editar
+      },
+      'd': {
+        'descricao': this.resposta4Editar,
+        'justificativa': this.justificativaresposta4Editar
       }
-     
-    });
+    };
+
+    this.database
+      .list(`simulados/${this.chaveAno}/questions/${this.disciplina}`)
+      .update(this.keyEditar, updates).then(() => {
+        swal(
+          'Atualizado!',
+          'A pergunta foi atualizada com sucesso!.',
+          'success'
+        );
+      })
+    
+
   
   }
 
@@ -207,14 +271,8 @@ private getDismissReason(reason: any): string {
       confirmButtonText: 'Sim, excluir!',
       reverseButtons: true
     }).then((result) => {
-      if (result.value) {
-
-       
-          
-       //   this.database.list('simulados/' + item[0].$key + '/questions/' + this.disciplina).remove(key);
-
-        
-        
+      if (result.value) {  
+          this.database.list(`simulados/${this.chaveAno}/questions/${this.disciplina}`).remove(key);
         swal(
           'Excluído!',
           'A pergunta foi deletada com sucesso!.',
