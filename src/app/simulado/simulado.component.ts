@@ -58,6 +58,8 @@ export class SimuladoComponent implements OnInit {
   numeroQuestao:number;
   chaveAno:string;
   aux:Observable<any[]>;
+  validaDisciplina:any = [];
+  valueChanges:Observable<any[]>
   @ViewChild('valuePath') valuePath; 
    
   constructor(public database:AngularFireDatabase,private modalService: NgbModal, public fire:AngularFireAuth) {
@@ -87,26 +89,42 @@ export class SimuladoComponent implements OnInit {
     return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear)
   });
   this.aux.take(1).forEach(item => {
-    console.log('item', item);
-    this.chaveAno = item[0].$key;
+   // console.log('item', item);
+    //this.chaveAno = item[0].$key;
+    this.getChaveAno(item[0])
+    if(item.length > 0){
     this.getChaveAno(item[0]).then((chaveAno) => {
-      if(chaveAno != undefined){
+      
         this.perguntas = this.database.list(`simulados/${chaveAno}/questions/${this.disciplina}`).snapshotChanges().map(arr => {
           return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
         });
-      }
-      this.perguntas.forEach(item =>{
-        console.log(item);
-      });
+        this.valueChanges = this.database.list(`simulados/${chaveAno}/questions/${this.disciplina}`).valueChanges();
+        this.valueChanges.forEach(e=>{
+         
+          this.validaDisciplina = e
+         // console.log('array', this.validaDisciplina);
+        });
+       
+
+    
+    });
+  }else{
+    this.perguntas = this.database.list(`simulados/8000/questions/${this.disciplina}`).snapshotChanges().map(arr => {
+      return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+    });
+    this.valueChanges = this.database.list(`simulados/8000/questions/${this.disciplina}`).valueChanges();
+    this.valueChanges.forEach(e=>{
+     
+      this.validaDisciplina = e
+     // console.log('array', this.validaDisciplina);
     });
     
+  }
     
   
   });
   //lista perguntas
-
   //
-
 
     // FOR PARA DADOS DO SELECT YEAR
     for(let x=0;x<20;x++)
@@ -114,15 +132,34 @@ export class SimuladoComponent implements OnInit {
       this.year.push(this.dataYear);
       this.dataYear--;
     }
+
     
 }
 
 getChaveAno(chave){
   return new Promise(resolve => {
+    if(chave != undefined || chave != null){
     this.chaveAno = chave.$key;
+    
+    }else{
+      this.chaveAno = null;
+     
+    }
     resolve(this.chaveAno);
   })
+ 
 }
+
+setDisciplina(item){
+  return new Promise(resolve => {
+    this.validaDisciplina.push(item);
+
+    resolve(this.validaDisciplina);
+  })
+ 
+}
+
+
 
 ngOnInit() {
 
@@ -153,19 +190,38 @@ selectAno(){
   });
   this.aux.take(1).forEach(item => {
     console.log('item', item);
-    this.chaveAno = item[0].$key;
+    //this.chaveAno = item[0].$key;
+    this.getChaveAno(item[0]);
+    if(item.length > 0){
     this.getChaveAno(item[0]).then((chaveAno) => {
-      if(chaveAno != undefined){
+     
         this.perguntas = this.database.list(`simulados/${chaveAno}/questions/${this.disciplina}`).snapshotChanges().map(arr => {
           return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
         });
-      }
-      this.perguntas.forEach(item =>{
-        console.log(item);
-      });
+        this.valueChanges = this.database.list(`simulados/${chaveAno}/questions/${this.disciplina}`).valueChanges();
+        this.valueChanges.forEach(e=>{
+         
+          this.validaDisciplina = e
+         // console.log('array', this.validaDisciplina);
+        });
+
     });
+  }else{
+    this.perguntas = this.database.list(`simulados/8000/questions/${this.disciplina}`).snapshotChanges().map(arr => {
+      return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+    });
+    this.valueChanges = this.database.list(`simulados/'8000'/questions/${this.disciplina}`).valueChanges();
+    this.valueChanges.forEach(e=>{
+     
+      this.validaDisciplina = e
+     // console.log('array', this.validaDisciplina);
+    });
+    
+  }
   });
-  
+
+
+
 }
 open(content, item) {
 
@@ -182,14 +238,14 @@ open(content, item) {
   this.resposta3Editar = item.respostas.c.descricao
   this.resposta4Editar = item.respostas.d.descricao
   this.respostaCorretaEditar = item.resposta_correta
-  if(item.justificativas !== undefined){
+  
   this.justificativaresposta1Editar = item.respostas.a.justificativa 
   this.justificativaresposta2Editar = item.respostas.b.justificativa 
   this.justificativaresposta3Editar = item.respostas.c.justificativa 
   this.justificativaresposta4Editar = item.respostas.d.justificativa 
-}
+
   this.keyEditar = item.$key;
-  
+
 }
 
 private getDismissReason(reason: any): string {
@@ -283,7 +339,6 @@ private getDismissReason(reason: any): string {
   }
 
 // MUDAR DE PÁGINA
-
   
 next(number:number){
   if(this.pergunta !== undefined && this.currentTab === 0 && number !== -1 && this.pergunta !== "" ){
@@ -356,8 +411,8 @@ next(number:number){
     let dados = {  
       "ano": this.valueYear,
       "questions":{  
-         [`${this.disciplina}`]:{  
-            [`${this.numeroQuestao}`]:{  
+         [`${this.disciplina}`]:[{  
+            
                "pergunta":this.pergunta,
                "resposta_correta":this.respostaCorreta,
                "respostas":{  
@@ -378,8 +433,8 @@ next(number:number){
                      "justificativa":this.justificativaresposta4
                   }
                }
-            }
-         }
+            
+         }]
       }
    }
 /*
@@ -406,10 +461,9 @@ next(number:number){
        })
     }
   });
-
-*/
-  let chaveAno =  this.database.list('simulados/',ref => ref.orderByChild('ano').equalTo(this.valueYear)).snapshotChanges().map(arr => {
-    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) )
+antes
+  let chaveAno =  this.database.list('simulados/').snapshotChanges().map(arr => {
+    return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear)
   }).take(1).forEach(item =>{
     let questions = []; 
     if(item.length > 0){
@@ -431,11 +485,43 @@ next(number:number){
       this.database.list('simulados/').push(novo);
     }
   });
+  */
+
+
+  if(this.chaveAno == undefined || this.chaveAno == null){
+    this.database.list('simulados/').push(
+      dados
+    )
+  }
+  else {
+    
+   if(this.validaDisciplina.length>0){
+ 
+    //this.validaDisciplina.push(teste);
+
+   // this.database.object('simulados/' + this.chaveAno + '/questions/' + this.disciplina).set(
+     
+    //  this.validaDisciplina
+   // )
+   this.setDisciplina(this.retornaJSONValida()).then(resolve =>{
+     console.log(this.validaDisciplina);
+   
+     this.database.object('simulados/' + this.chaveAno + '/questions/' + this.disciplina).set(
+      
+      this.validaDisciplina
+     )
+     
+   })
+   
+    
+  }else{
+    this.database.object('simulados/' + this.chaveAno + '/questions/' + this.disciplina).set(
+      
+      this.retornaJSON()
+     )
+  }
+  }
   
-
-
-
-
 /*
    let pergunta;
    pergunta = this.database.list('simulados/').snapshotChanges().map(arr => {
@@ -455,10 +541,9 @@ next(number:number){
       );
       console.log(dados);
     }
-
     });
-
    */
+  this.selectAno();
   }else if (number === -1 &&  this.currentTab > 0 ){
     this.currentTab = this.currentTab + number;
   }
@@ -478,9 +563,35 @@ next(number:number){
     this.justificativaresposta3 = undefined
     this.justificativaresposta4 = undefined
     this.respostaCorreta = undefined
+    this.selectAno();
   }
 
   retornaJSON(){
+    let dados = [{  
+               "pergunta":this.pergunta,
+               "resposta_correta":this.respostaCorreta,
+               "respostas":{  
+                  "a":{  
+                     "descricao":this.resposta1,
+                     "justificativa":this.justificativaresposta1
+                  },
+                  "b":{  
+                     "descricao":this.resposta2,
+                     "justificativa":this.justificativaresposta2
+                  },
+                  "c":{  
+                     "descricao":this.resposta3,
+                     "justificativa":this.justificativaresposta3
+                  },
+                  "d":{  
+                     "descricao":this.resposta4,
+                     "justificativa":this.justificativaresposta4
+                  }
+               }
+    }]
+   return dados;
+  }
+  retornaJSONValida(){
     let dados = {  
                "pergunta":this.pergunta,
                "resposta_correta":this.respostaCorreta,
@@ -502,7 +613,7 @@ next(number:number){
                      "justificativa":this.justificativaresposta4
                   }
                }
-            }
+    }
    return dados;
   }
 
@@ -511,10 +622,38 @@ next(number:number){
      
         for(let x in this.result){
 
+
+         
+            let dados = {  
+                       "pergunta":this.result[x].Pergunta,
+                       "resposta_correta": this.result[x].respostaCorreta,
+                       "respostas":{  
+                          "a":{  
+                             "descricao":this.result[x].resposta1,
+                             "justificativa":this.result[x].justificativaresposta1 || null
+                          },
+                          "b":{  
+                             "descricao":this.result[x].resposta2,
+                             "justificativa":this.result[x].justificativaresposta2 || null
+                          },
+                          "c":{  
+                             "descricao":this.result[x].resposta3,
+                             "justificativa":this.result[x].justificativaresposta3 || null
+                          },
+                          "d":{  
+                             "descricao":this.result[x].resposta4,
+                             "justificativa":this.result[x].justificativaresposta4 || null
+                          }
+                       }
+                    }
+           
+          
+        
+          
           if(this.result[x].Pergunta == null || this.result[x].Pergunta == undefined || this.result[x].Pergunta == "" ){
             
             this.validacao = 1;
-          }else 
+          }else   
           if(
               (this.result[x].resposta1 == null || this.result[x].resposta1 == undefined || this.result[x].resposta1 == "") ||
               (this.result[x].resposta2 == null || this.result[x].resposta2 == undefined || this.result[x].resposta2 == "") ||
@@ -537,8 +676,8 @@ next(number:number){
           else{
             
               this.validacao = 2;
-
-        this.database.list('simulado/' + this.valueYear + '/' + this.disciplina).push({
+          /*
+        this.database.list('simulados/' + this.chaveAno).push({
           pergunta: this.result[x].Pergunta, 
           ano: this.valueYear,
           criadaPor: this.fire.auth.currentUser.email,
@@ -557,13 +696,37 @@ next(number:number){
                     justificativaresposta4: this.result[x].justificativaresposta4   || null
                   }
         
-
       })
-    }
-    }
-  
-  }
+      */
+     /*
+     let chaveAno =  this.database.list('simulados/').snapshotChanges().map(arr => {
+      return arr.map(snap => Object.assign(snap.payload.val(), { $key: snap.key }) ).filter(i => i.ano == this.valueYear)
+    }).take(this.result.length).forEach(item =>{
+      let questions = []; 
+      if(item.length > 0){
+        if(item[0].questions.hasOwnProperty(this.disciplina)){
+          questions = item[0].questions[this.disciplina];
+        }
+        let all = questions.length;
+        questions[all] = dados;  
+        this.database.object('simulados/'+item[0].$key + '/questions/' + this.disciplina).set(questions);
+      } else if(x == '0') {
+        let novo = {
+          ano: this.valueYear,
+          questions: {
+            [`${this.disciplina}`]: [
+             dados
+            ]
+          }
+        }
+        this.database.list('simulados/').push(novo);
+      }
+      console.log('i', item)
+    });
+    */
 
   
+  }}}
+
 
 }

@@ -162,11 +162,11 @@
                         <label>Resposta A:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta" [(ngModel)] = 'resposta1Editar'
-                                     [ngStyle]="respostaCorretaBackground === 'resposta1' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta1' && {'background':'#ff6666'} " ></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'a' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta1' && {'background':'#ff6666'} " ></textarea></p>
                         <label>Justificativa:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta1Editar'
-                                     [ngStyle]="respostaCorretaBackground === 'resposta1' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta1' && {'background':'#ff6666'} "></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'a' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta1' && {'background':'#ff6666'} "></textarea></p>
                     </div>
                 </ng-template>
             </ngb-tab>
@@ -176,11 +176,11 @@
                         <label>Resposta B:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"  placeholder="Resposta" [(ngModel)] = 'resposta2Editar'
-                                     [ngStyle]="respostaCorretaBackground === 'resposta2' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta2' && {'background':'#ff6666'} "></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'b' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta2' && {'background':'#ff6666'} "></textarea></p>
                         <label>Justificativa Resposta:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta2Editar' 
-                                     [ngStyle]="respostaCorretaBackground === 'resposta2' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta2' && {'background':'#ff6666'} "></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'b' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta2' && {'background':'#ff6666'} "></textarea></p>
                     </div>
                 </ng-template>
             </ngb-tab>
@@ -190,11 +190,11 @@
                         <label>Resposta C:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Resposta" [(ngModel)] = 'resposta3Editar'
-                                     [ngStyle]="respostaCorretaBackground === 'resposta3' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta3' && {'background':'#ff6666'} "></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'c' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta3' && {'background':'#ff6666'} "></textarea></p>
                         <label>Justificativa Resposta:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta3Editar'
-                                     [ngStyle]="respostaCorretaBackground === 'resposta3' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta3' && {'background':'#ff6666'} "></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'c' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta3' && {'background':'#ff6666'} "></textarea></p>
                     </div>
                 </ng-template>
             </ngb-tab>
@@ -205,11 +205,11 @@
                         <label>Resposta D:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3"  placeholder="Resposta" [(ngModel)] = 'resposta4Editar'
-                                     [ngStyle]="respostaCorretaBackground === 'resposta4' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta4' && {'background':'#ff6666'} "></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'd' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta4' && {'background':'#ff6666'} "></textarea></p>
                         <label>Justificativa Resposta:</label>
 
                         <p><textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Justificativa" [(ngModel)] = 'justificativaresposta4Editar' 
-                                     [ngStyle]="respostaCorretaBackground === 'resposta4' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta4' && {'background':'#ff6666'} " ></textarea></p>
+                                     [ngStyle]="respostaCorretaBackground === 'd' && {'background':'#6ec985'} || respostaCorretaBackground !== 'resposta4' && {'background':'#ff6666'} " ></textarea></p>
                     </div>
                 </ng-template>
             </ngb-tab>
@@ -220,10 +220,10 @@
                         <label>Resposta Correta:</label>
 
                         <select [(ngModel)] = 'respostaCorretaEditar'  class = 'selectpicker'>
-                            <option value="resposta1" >a)</option>
-                            <option value="resposta2" >b)</option>
-                            <option value="resposta3" >c)</option>
-                            <option value="resposta4" >d)</option>
+                            <option value="a" >a)</option>
+                            <option value="b" >b)</option>
+                            <option value="c" >c)</option>
+                            <option value="d" >d)</option>
                         </select>                            
 
                     </div>
@@ -242,6 +242,4 @@
     </div>
 
 </ng-template>
-
-
 
