@@ -138,12 +138,12 @@ export class SimuladoComponent implements OnInit {
 
 getChaveAno(chave){
   return new Promise(resolve => {
+    console.log('chave',chave);
     if(chave != undefined || chave != null){
     this.chaveAno = chave.$key;
     
     }else{
       this.chaveAno = null;
-     
     }
     resolve(this.chaveAno);
   })
@@ -215,6 +215,7 @@ selectAno(){
      
       this.validaDisciplina = e
      // console.log('array', this.validaDisciplina);
+     console.log(this.validaDisciplina);
     });
     
   }
@@ -617,14 +618,40 @@ antes
    return dados;
   }
 
+  retornaJSONExecel(x){
+    let dados = {  
+      "pergunta":this.result[x].Pergunta,
+      "resposta_correta": this.result[x].respostaCorreta,
+      "respostas":{  
+         "a":{  
+            "descricao":this.result[x].resposta1,
+            "justificativa":this.result[x].justificativaresposta1 || null
+         },
+         "b":{  
+            "descricao":this.result[x].resposta2,
+            "justificativa":this.result[x].justificativaresposta2 || null
+         },
+         "c":{  
+            "descricao":this.result[x].resposta3,
+            "justificativa":this.result[x].justificativaresposta3 || null
+         },
+         "d":{  
+            "descricao":this.result[x].resposta4,
+            "justificativa":this.result[x].justificativaresposta4 || null
+         }
+      }
+    }
+   return dados;
+  }
   enviarPerguntaUpload(){
-      
+    
      
         for(let x in this.result){
-
+          
+       
 
          
-            let dados = {  
+            let dados1 = {  
                        "pergunta":this.result[x].Pergunta,
                        "resposta_correta": this.result[x].respostaCorreta,
                        "respostas":{  
@@ -649,7 +676,7 @@ antes
            
           
         
-          
+         
           if(this.result[x].Pergunta == null || this.result[x].Pergunta == undefined || this.result[x].Pergunta == "" ){
             
             this.validacao = 1;
@@ -676,6 +703,78 @@ antes
           else{
             
               this.validacao = 2;
+
+              let dados = {  
+                "ano": this.valueYear,
+                "questions":{  
+                   [`${this.disciplina}`]:[
+                     {  
+                      
+                    "pergunta":this.result[x].Pergunta,
+                    "resposta_correta": this.result[x].respostaCorreta,
+                    "respostas":{  
+                       "a":{  
+                          "descricao":this.result[x].resposta1,
+                          "justificativa":this.result[x].justificativaresposta1 || null
+                       },
+                       "b":{  
+                          "descricao":this.result[x].resposta2,
+                          "justificativa":this.result[x].justificativaresposta2 || null
+                       },
+                       "c":{  
+                          "descricao":this.result[x].resposta3,
+                          "justificativa":this.result[x].justificativaresposta3 || null
+                       },
+                       "d":{  
+                          "descricao":this.result[x].resposta4,
+                          "justificativa":this.result[x].justificativaresposta4 || null
+                       }
+                    }
+                      
+                   }]
+                }
+             }
+
+           
+  
+  if(this.chaveAno == undefined || this.chaveAno == null){
+   
+   this.getKey(dados);
+  
+  }
+  
+  else {
+    this.updateValidaDisiciplina();   
+    console.log(this.validaDisciplina);
+   if(this.validaDisciplina.length>0){
+ 
+    //this.validaDisciplina.push(teste);
+
+   // this.database.object('simulados/' + this.chaveAno + '/questions/' + this.disciplina).set(
+     
+    //  this.validaDisciplina
+   // )
+   this.setDisciplina(this.retornaJSONExecel(x)).then(resolve =>{
+     console.log(this.validaDisciplina);
+     
+     this.database.object('simulados/' + this.chaveAno + '/questions/' + this.disciplina).set(
+      
+      this.validaDisciplina
+     )
+     
+   })
+   
+    
+  }else{
+    this.validaDisciplina.push(this.retornaJSONExecel(x));
+    this.database.object('simulados/' + this.chaveAno + '/questions/' + this.disciplina).set(
+      
+      this.validaDisciplina
+     )
+  }
+
+  }
+  
           /*
         this.database.list('simulados/' + this.chaveAno).push({
           pergunta: this.result[x].Pergunta, 
@@ -725,8 +824,31 @@ antes
     });
     */
 
-  
   }}}
 
+  getKey(dados){
+    return new Promise(resolve => {
+      let retorno = this.database.list('simulados/').push(
+            dados
+          ).key;
+      this.chaveAno = retorno;
+      resolve(this.chaveAno);
+    });
+  }
+
+  updateValidaDisiciplina(){
+    return new Promise(resolve => {
+      
+      this.valueChanges = this.database.list(`simulados/${this.chaveAno}/questions/${this.disciplina}`).valueChanges();
+      this.valueChanges.forEach(e=>{
+       
+        this.validaDisciplina = e
+        console.log('array', this.validaDisciplina);
+      });
+
+
+      resolve(this.validaDisciplina);
+    });
+  }
 
 }
